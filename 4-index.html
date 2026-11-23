@@ -1,0 +1,1840 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>C++ Studio Ultimate — EUI C-CS111 (Lectures + Labs + Midterm + Functions)</title>
+  <meta name="description" content="Interactive C++ study platform for EUI C-CS111: lectures, interactive labs, IDE challenges with a real g++ engine, and a midterm simulator built from the official Fall 2026 midterm." />
+  <meta property="og:title" content="C++ Studio — EUI C-CS111" />
+  <meta property="og:description" content="Lectures 01–09, interactive labs, 17 IDE challenges and a midterm simulator for Introduction to Computing and Programming." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%234C8DFF'/%3E%3Cstop offset='1' stop-color='%238F7BFF'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Ctext x='32' y='43' font-family='monospace' font-size='24' font-weight='bold' fill='white' text-anchor='middle'%3EC++%3C/text%3E%3C/svg%3E" />
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Manrope', 'Tajawal', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            display: ['Manrope', 'Tajawal', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            ar: ['Tajawal', 'Manrope', 'sans-serif'],
+            mono: ['JetBrains Mono', 'SF Mono', 'Menlo', 'monospace'],
+          },
+          colors: {
+            apple: {
+              blue: '#0A84FF',
+              green: '#30D158',
+              red: '#FF453A',
+              orange: '#FF9F0A',
+              purple: '#BF5AF2',
+              teal: '#64D2FF',
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    :root {
+      --bg-canvas: #F5F5F7;
+      --bg-card: #FFFFFF;
+      --bg-elevated: #F5F5F7;
+      --bg-glass: rgba(251, 251, 253, 0.8);
+      --border-hairline: rgba(0, 0, 0, 0.08);
+      --border-specular: rgba(255, 255, 255, 0.9);
+      --text-primary: #1D1D1F;
+      --text-secondary: #6E6E73;
+      --code-bg: #F5F5F7;
+      --gutter-bg: #ECECF0;
+      --gutter-text: #8E8E93;
+      --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.05), 0 16px 40px -16px rgba(0, 0, 0, 0.1);
+    }
+    html.dark {
+      --bg-canvas: #000000;
+      --bg-card: #161617;
+      --bg-elevated: #232325;
+      --bg-glass: rgba(18, 18, 19, 0.72);
+      --border-hairline: rgba(255, 255, 255, 0.09);
+      --border-specular: rgba(255, 255, 255, 0.05);
+      --text-primary: #F5F5F7;
+      --text-secondary: #86868B;
+      --code-bg: #101012;
+      --gutter-bg: #141416;
+      --gutter-text: #55555C;
+      --shadow-card: 0 12px 32px rgba(0, 0, 0, 0.55);
+    }
+    html { scroll-behavior: smooth; }
+    * { -webkit-tap-highlight-color: transparent; }
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--text-primary);
+      font-family: 'Manrope', 'Tajawal', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0; z-index: -2; pointer-events: none;
+      background: radial-gradient(60rem 30rem at 50% -18%, rgba(0, 113, 227, 0.07), transparent 62%);
+    }
+    html.dark body::before {
+      background: radial-gradient(60rem 30rem at 50% -18%, rgba(41, 151, 255, 0.15), transparent 62%);
+    }
+    ::selection { background: rgba(10, 132, 255, 0.28); }
+
+    .glass-bar {
+      background: var(--bg-glass);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-bottom: 1px solid var(--border-hairline);
+    }
+    .bento-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-hairline);
+      box-shadow: var(--shadow-card);
+      transition: transform 0.3s cubic-bezier(0.28, 0.84, 0.42, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+    .bento-hover:hover {
+      transform: translateY(-3px);
+      border-color: rgba(10, 132, 255, 0.35);
+      box-shadow: 0 22px 48px -16px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(10, 132, 255, 0.12);
+    }
+    .elevated {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-hairline);
+    }
+    .nav-shell {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-hairline);
+    }
+
+    .logo-mark {
+      background: #0A84FF;
+      box-shadow: 0 6px 16px -6px rgba(10, 132, 255, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+    }
+    .btn-primary {
+      background: #0071E3;
+      border: none;
+      border-radius: 999px !important;
+      box-shadow: 0 8px 20px -8px rgba(0, 113, 227, 0.5);
+      transition: transform 0.2s ease, box-shadow 0.25s ease, filter 0.2s ease;
+    }
+    .btn-primary:hover { filter: brightness(1.08); transform: translateY(-1px); box-shadow: 0 12px 26px -8px rgba(0, 113, 227, 0.55); }
+    .btn-primary:active { transform: scale(0.97); }
+    html.dark .btn-primary { background: #0A84FF; box-shadow: 0 8px 20px -8px rgba(10, 132, 255, 0.5); }
+    html.dark .btn-primary:hover { box-shadow: 0 12px 26px -8px rgba(10, 132, 255, 0.55); }
+    .nav-btn.bg-apple-blue, .filter-pill.bg-apple-blue, .pat-btn.bg-apple-blue,
+    .lab-tab-btn.bg-apple-blue, .mpane-btn.bg-apple-blue {
+      background: #0071E3;
+      box-shadow: 0 4px 14px -4px rgba(0, 113, 227, 0.45);
+    }
+    html.dark .nav-btn.bg-apple-blue, html.dark .filter-pill.bg-apple-blue, html.dark .pat-btn.bg-apple-blue,
+    html.dark .lab-tab-btn.bg-apple-blue, html.dark .mpane-btn.bg-apple-blue {
+      background: #0A84FF;
+      box-shadow: 0 4px 14px -4px rgba(10, 132, 255, 0.45);
+    }
+    .nav-btn:not(.bg-apple-blue):hover, .lab-tab-btn:not(.bg-apple-blue):hover { background: var(--bg-elevated); }
+    .bh-case-btn[class*="bg-apple-blue"], .trap-sel-btn[class*="bg-apple-blue"] {
+      box-shadow: 0 0 0 1px rgba(10, 132, 255, 0.35), 0 8px 22px -12px rgba(10, 132, 255, 0.4);
+    }
+    .gradient-text {
+      background: linear-gradient(95deg, #2997FF 0%, #BF5AF2 55%, #FF6482 110%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .stat-chip {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      padding: 0.45rem 0.8rem; border-radius: 999px;
+      border: 1px solid var(--border-hairline); background: var(--bg-elevated);
+      font-size: 11px; font-weight: 600; white-space: nowrap;
+    }
+
+    /* Xcode Syntax Highlighting */
+    .tok-kw { color: #FF7AB2; font-weight: 500; }
+    .tok-type { color: #6BDFFF; }
+    .tok-str { color: #FF8170; }
+    .tok-num { color: #D9C97C; }
+    .tok-cmt { color: #7A8699; font-style: italic; }
+    .tok-prep { color: #FFA14F; }
+    html:not(.dark) .tok-kw { color: #AD3DA4; }
+    html:not(.dark) .tok-type { color: #0B4F79; }
+    html:not(.dark) .tok-str { color: #D12F1B; }
+    html:not(.dark) .tok-num { color: #272AD8; }
+    html:not(.dark) .tok-cmt { color: #6C7986; }
+    html:not(.dark) .tok-prep { color: #78492A; }
+
+    .filter-pill, .pat-btn, .lab-tab-btn, .nav-btn { white-space: nowrap; }
+    .font-display { letter-spacing: -0.02em; }
+    .rtl { direction: rtl; font-family: 'Tajawal', 'Manrope', sans-serif; }
+    .ltr { direction: ltr; }
+
+    /* IDE Editor */
+    .ide-shell {
+      background: var(--code-bg);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: var(--editor-fs, 13.5px);
+      line-height: 1.7;
+    }
+    .ide-gutter {
+      background: var(--gutter-bg);
+      color: var(--gutter-text);
+      border-right: 1px solid var(--border-hairline);
+      user-select: none;
+      text-align: right;
+      padding: 16px 12px;
+      min-width: 48px;
+      overflow: hidden;
+      flex: none;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .ide-editor-wrap { position: relative; flex: 1; overflow: hidden; }
+    .ide-highlight, .ide-textarea {
+      margin: 0; padding: 16px 18px;
+      font-family: inherit; font-size: inherit; line-height: inherit;
+      white-space: pre; overflow: auto; tab-size: 4;
+    }
+    .ide-textarea {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      background: transparent; color: transparent; caret-color: #0A84FF;
+      resize: none; outline: none; border: 0;
+    }
+    .ide-highlight { pointer-events: none; min-height: 100%; }
+
+    .matrix-cell { transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .matrix-cell-active {
+      background: #0A84FF !important; color: #FFFFFF !important;
+      border-color: #64D2FF !important; transform: scale(1.08);
+      box-shadow: 0 0 18px rgba(10, 132, 255, 0.55); z-index: 2;
+    }
+    .matrix-cell-star { background: rgba(10, 132, 255, 0.16); border-color: rgba(10, 132, 255, 0.42); color: #64D2FF; }
+    html:not(.dark) .matrix-cell-star { background: rgba(0, 122, 255, 0.12); color: #007AFF; }
+
+    .bit-btn-on {
+      background: linear-gradient(180deg, #0A84FF 0%, #0066D6 100%);
+      color: #FFFFFF; border-color: rgba(100, 210, 255, 0.5);
+      box-shadow: 0 4px 14px rgba(10, 132, 255, 0.35);
+    }
+
+    @keyframes fadeSlide { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .view-animate { animation: fadeSlide 0.3s cubic-bezier(0.28, 0.84, 0.42, 1); }
+    @keyframes cardRise { from { opacity: 0; transform: translateY(14px) scale(0.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    #curriculum-grid > * { animation: cardRise 0.5s cubic-bezier(0.28, 0.84, 0.42, 1) both; }
+    #curriculum-grid > *:nth-child(2) { animation-delay: 0.05s; }
+    #curriculum-grid > *:nth-child(3) { animation-delay: 0.10s; }
+    #curriculum-grid > *:nth-child(4) { animation-delay: 0.15s; }
+    #curriculum-grid > *:nth-child(5) { animation-delay: 0.20s; }
+    #curriculum-grid > *:nth-child(6) { animation-delay: 0.25s; }
+    #curriculum-grid > *:nth-child(7) { animation-delay: 0.30s; }
+    #curriculum-grid > *:nth-child(8) { animation-delay: 0.35s; }
+    #curriculum-grid > *:nth-child(9) { animation-delay: 0.40s; }
+
+    /* ===== Apple-style motion layer ===== */
+    :root { --ease-apple: cubic-bezier(0.28, 0.84, 0.42, 1); --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1); }
+    .view-animate { animation: viewIn 0.45s var(--ease-out-expo); }
+    @keyframes viewIn { from { opacity: 0; transform: translateY(14px) scale(0.99); } to { opacity: 1; transform: none; } }
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.6s var(--ease-out-expo), transform 0.6s var(--ease-out-expo); }
+    .reveal.reveal-in { opacity: 1; transform: none; }
+    .reveal-d1 { transition-delay: 0.08s; }
+    .reveal-d2 { transition-delay: 0.16s; }
+    button:active { transform: scale(0.96); }
+    .bento-hover:active { transform: translateY(-1px) scale(0.99); }
+    html.theme-anim *, html.theme-anim *::before, html.theme-anim *::after {
+      transition: background-color 0.35s ease, border-color 0.35s ease, color 0.35s ease, fill 0.35s ease, stroke 0.35s ease, box-shadow 0.35s ease !important;
+    }
+    #home-ring { transition: stroke-dashoffset 1.1s var(--ease-out-expo); }
+
+    /* ===== Wow layer ===== */
+    @keyframes heroPop { from { opacity: 0; transform: translateY(22px) scale(0.98); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
+    .hero-el { opacity: 0; animation: heroPop 0.8s var(--ease-out-expo) forwards; }
+    .hero-el.d1 { animation-delay: 0.06s; }
+    .hero-el.d2 { animation-delay: 0.14s; }
+    .hero-el.d3 { animation-delay: 0.24s; }
+    .hero-el.d4 { animation-delay: 0.34s; }
+    .hero-el.d5 { animation-delay: 0.44s; }
+    .gradient-text {
+      background: linear-gradient(95deg, #2997FF 0%, #BF5AF2 45%, #FF6482 90%, #2997FF 140%);
+      background-size: 220% auto;
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      animation: gradShift 7s ease-in-out infinite alternate;
+    }
+    @keyframes gradShift { from { background-position: 0% center; } to { background-position: 100% center; } }
+    .stat-chip { transition: transform 0.25s var(--ease-apple), border-color 0.25s ease, box-shadow 0.25s ease; }
+    .stat-chip:hover { transform: translateY(-2px); border-color: rgba(10, 132, 255, 0.4); box-shadow: 0 8px 18px -10px rgba(10, 132, 255, 0.45); }
+    #theme-toggle svg { animation: iconSpin 0.45s var(--ease-apple); }
+    @keyframes iconSpin { from { transform: rotate(-120deg) scale(0.5); opacity: 0; } to { transform: none; opacity: 1; } }
+    #theme-wipe { position: fixed; inset: 0; z-index: 9998; pointer-events: none; clip-path: circle(0px at var(--wx, 95%) var(--wy, 40px)); transition: clip-path 0.55s var(--ease-out-expo), opacity 0.22s ease; }
+    #theme-wipe.on { clip-path: circle(150% at var(--wx, 95%) var(--wy, 40px)); }
+    .confetti-wrap { position: fixed; inset: 0; pointer-events: none; z-index: 9999; overflow: hidden; }
+    .confetti { position: absolute; top: 16%; animation: confettiFall 1.35s cubic-bezier(0.2, 0.7, 0.4, 1) forwards; }
+    @keyframes confettiFall {
+      0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+      100% { transform: translate(var(--dx), 55vh) rotate(var(--rot)); opacity: 0; }
+    }
+    @keyframes solvePulse { 0% { transform: scale(1); } 40% { transform: scale(1.18); } 100% { transform: scale(1); } }
+    .solve-pulse { animation: solvePulse 0.5s var(--ease-apple); }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+      .reveal { opacity: 1 !important; transform: none !important; }
+    }
+
+    button { transition-property: color, background-color, border-color, box-shadow, transform, filter; transition-duration: 0.2s; }
+    input[type="range"] { accent-color: #0A84FF !important; }
+    select, input[type="text"] { transition: border-color 0.2s ease, box-shadow 0.2s ease; }
+    select:focus, input[type="text"]:focus { border-color: rgba(10, 132, 255, 0.6) !important; box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.18); outline: none; }
+    textarea:focus-visible, button:focus-visible, a:focus-visible { outline: 2px solid rgba(10, 132, 255, 0.65); outline-offset: 2px; }
+
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(142, 142, 147, 0.32); border-radius: 999px; border: 2px solid transparent; background-clip: padding-box; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(142, 142, 147, 0.5); background-clip: padding-box; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Frosted Glass Navigation Bar -->
+  <header class="glass-bar sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 h-16 flex items-center justify-between gap-2">
+      <button id="brand-home-btn" class="flex items-center gap-2.5 shrink-0 text-left group">
+        <div class="logo-mark w-9 h-9 rounded-xl flex items-center justify-center text-white font-mono font-bold text-[13px] group-hover:scale-105 transition-transform">
+          C++
+        </div>
+        <div class="leading-tight hidden sm:block">
+          <div class="font-display font-bold text-[15px] tracking-tight flex items-center gap-1.5">
+            <span>C++ Studio</span>
+            <span class="text-[9px] font-bold px-1.5 py-px rounded-md bg-apple-blue/10 text-apple-blue border border-apple-blue/30 tracking-widest">PRO</span>
+          </div>
+          <div class="text-[11px] text-[var(--text-secondary)]">EUI C-CS111 · Lecs + Labs + Midterm</div>
+        </div>
+      </button>
+
+      <nav class="nav-shell flex items-center p-1 rounded-2xl overflow-x-auto max-w-full" aria-label="Primary Navigation">
+        <button data-nav="home" class="nav-btn px-3 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 whitespace-nowrap">
+          <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i><span data-i18n="nav_home">Home</span>
+        </button>
+        <button data-nav="labs" class="nav-btn px-3 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 whitespace-nowrap">
+          <i data-lucide="flask-conical" class="w-3.5 h-3.5"></i><span data-i18n="nav_labs">Interactive Labs</span>
+        </button>
+        <button data-nav="studio" class="nav-btn px-3 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 whitespace-nowrap">
+          <i data-lucide="terminal" class="w-3.5 h-3.5"></i><span data-i18n="nav_ide">IDE (17)</span>
+        </button>
+        <button data-nav="exam" class="nav-btn px-3 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 whitespace-nowrap">
+          <i data-lucide="award" class="w-3.5 h-3.5"></i><span data-i18n="nav_exam">Midterm Sim</span>
+        </button>
+      </nav>
+
+      <div class="flex items-center gap-2 shrink-0">
+        <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full elevated text-xs font-semibold">
+          <span class="w-2 h-2 rounded-full bg-apple-green animate-pulse"></span>
+          <span id="hdr-progress">0/17 Solved</span>
+        </div>
+        <button id="lang-toggle" class="px-2.5 h-8 rounded-xl elevated flex items-center justify-center text-xs font-bold hover:border-apple-blue transition-colors" title="Switch UI Language (AR / EN)">عربي</button>
+        <button id="theme-toggle" class="w-8 h-8 rounded-xl elevated flex items-center justify-center hover:border-apple-blue transition-colors" title="Toggle Dark/Light Mode" aria-label="Toggle Dark/Light Mode">
+          <i id="theme-icon" data-lucide="sun" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div id="toast" class="fixed bottom-5 right-5 z-50 hidden items-center gap-2 px-4 py-2.5 rounded-2xl bento-card text-xs sm:text-sm font-medium">
+    <span id="toast-dot" class="w-2 h-2 rounded-full bg-apple-green"></span>
+    <span id="toast-msg"></span>
+  </div>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-7 sm:py-10">
+
+    <!-- =================================================================== -->
+    <!-- VIEW 1: APPLE BENTO HOME                                            -->
+    <!-- =================================================================== -->
+    <section id="view-home" class="view-section view-animate space-y-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <!-- Hero Main Bento -->
+        <div class="lg:col-span-7 bento-card hero-card rounded-3xl p-6 sm:p-8 flex flex-col justify-between gap-6 relative overflow-hidden reveal">
+          <div class="space-y-3 relative z-10">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-semibold bg-apple-blue/10 text-apple-blue border border-apple-blue/30 hero-el d1">
+              <span class="w-1.5 h-1.5 rounded-full bg-apple-blue"></span>
+              <span>C-CS111 · Fall 2026</span>
+            </div>
+            <h1 class="font-display text-[2rem] sm:text-[2.9rem] font-extrabold tracking-tight leading-[1.06] hero-el d2">
+              Your Complete C-CS111<br />
+              <span class="gradient-text">Interactive Coding Arena.</span>
+            </h1>
+            <p class="text-sm text-[var(--text-secondary)] rtl text-right leading-relaxed hero-el d3">
+              17 تحدي، 5 مختبرات تفاعلية، ومحاكي الميدترم الحقيقي — كله في مكان واحد.
+            </p>
+            <div class="flex flex-wrap items-center gap-2 pt-1 hero-el d4">
+              <span class="stat-chip"><i data-lucide="terminal" class="w-3.5 h-3.5 text-apple-blue"></i>17 Coding Challenges</span>
+              <span class="stat-chip"><i data-lucide="flask-conical" class="w-3.5 h-3.5 text-apple-teal"></i>5 Interactive Labs</span>
+              <span class="stat-chip"><i data-lucide="award" class="w-3.5 h-3.5 text-apple-orange"></i>19-Q Midterm Sim</span>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-2.5 relative z-10 hero-el d5">
+            <button id="home-go-labs" class="btn-primary px-5 py-2.5 rounded-2xl text-white text-sm font-semibold flex items-center gap-2">
+              <i data-lucide="flask-conical" class="w-4 h-4"></i>
+              <span>5 Interactive Labs</span>
+            </button>
+            <button id="home-go-studio" class="px-4 py-2.5 rounded-2xl elevated hover:border-apple-blue text-sm font-semibold transition-all flex items-center gap-2">
+              <i data-lucide="terminal" class="w-4 h-4"></i>
+              <span>17 Challenges</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Bento Column -->
+        <div class="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
+          <!-- Midterm Bug Hunter Spotlight -->
+          <div class="bento-card rounded-3xl p-5 flex flex-col justify-between gap-3 reveal reveal-d1">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-apple-red flex items-center gap-1.5">
+                <i data-lucide="crosshair" class="w-3.5 h-3.5"></i>
+                Real Midterm Q3 · Bug Hunter
+              </span>
+              <button id="home-go-bughunter" class="text-[11px] font-semibold text-apple-blue hover:underline">Hunt Bugs →</button>
+            </div>
+            <div class="rounded-2xl p-3 bg-[var(--code-bg)] border border-[var(--border-hairline)] font-mono text-xs leading-relaxed">
+              <span class="tok-kw">int</span> n, i = <span class="tok-num">1</span>, sum; <span class="tok-cmt">// Bug #1?</span><br/>
+              <span class="tok-kw">while</span> (i &lt; n)<span class="tok-str">;</span> <span class="tok-cmt">// Bug #2 &amp; #3?</span>
+            </div>
+            <p class="text-xs text-[var(--text-secondary)] rtl text-right">
+              اصطد الـ <strong>5 أخطاء</strong> في سؤال الميدترم الحقيقي بالضغط على السطور.
+            </p>
+          </div>
+
+          <!-- Readiness Meter -->
+          <div class="bento-card rounded-3xl p-5 flex items-center justify-between gap-4 reveal reveal-d2">
+            <div class="space-y-1.5">
+              <div class="text-xs font-semibold text-[var(--text-secondary)]">Course Mastery</div>
+              <div class="flex items-baseline gap-2">
+                <span id="home-readiness-pct" class="text-2xl font-extrabold tracking-tight">10%</span>
+                <span id="home-best-grade" class="text-xs font-semibold px-2 py-0.5 rounded-full elevated text-[var(--text-secondary)]">Midterm: Not Taken</span>
+              </div>
+              <button id="home-go-exam" class="text-xs font-semibold text-apple-blue hover:underline flex items-center gap-1 pt-0.5">
+                <span>Take the Midterm Sim</span>
+                <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+            <div class="relative w-16 h-16 shrink-0 flex items-center justify-center">
+              <svg class="w-16 h-16 -rotate-90" viewBox="0 0 64 64">
+                <circle cx="32" cy="32" r="26" fill="none" stroke="currentColor" class="text-[var(--border-hairline)]" stroke-width="6" />
+                <circle id="home-ring" cx="32" cy="32" r="26" fill="none" stroke="#4C8DFF" stroke-width="6" stroke-linecap="round" stroke-dasharray="163.36" stroke-dashoffset="147" />
+              </svg>
+              <i data-lucide="award" class="w-5 h-5 text-apple-blue absolute"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Unified Lectures + Labs Map -->
+      <div class="space-y-3 reveal reveal-d1">
+        <div class="flex items-center justify-between flex-wrap gap-3">
+          <div>
+            <h2 class="text-lg font-bold tracking-tight">Lectures & Labs</h2>
+          </div>
+          <div class="flex items-center gap-1.5 overflow-x-auto">
+            <button data-filter="all" class="filter-pill px-3.5 py-1.5 rounded-full text-xs font-semibold bg-apple-blue text-white">All (9)</button>
+            <button data-filter="basics" class="filter-pill px-3.5 py-1.5 rounded-full text-xs font-medium elevated">Basics</button>
+            <button data-filter="decisions" class="filter-pill px-3.5 py-1.5 rounded-full text-xs font-medium elevated">Decisions</button>
+            <button data-filter="loops" class="filter-pill px-3.5 py-1.5 rounded-full text-xs font-medium elevated">Loops & Nested</button>
+            <button data-filter="functions" class="filter-pill px-3.5 py-1.5 rounded-full text-xs font-medium elevated">Functions</button>
+          </div>
+        </div>
+        <div id="curriculum-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3.5"></div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- VIEW 2: 5 INTERACTIVE LABS                                          -->
+    <!-- =================================================================== -->
+    <section id="view-labs" class="view-section view-animate hidden space-y-5">
+      <div class="bento-card rounded-2xl p-2 flex items-center gap-1.5 overflow-x-auto">
+        <button data-lab="pattern" class="lab-tab-btn px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-apple-blue text-white flex items-center gap-1.5 whitespace-nowrap">
+          <i data-lucide="grid-3x3" class="w-4 h-4"></i><span>1. Pattern Matrix</span>
+        </button>
+        <button data-lab="bughunter" class="lab-tab-btn px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium text-[var(--text-secondary)] flex items-center gap-1.5 whitespace-nowrap">
+          <i data-lucide="crosshair" class="w-4 h-4"></i><span>2. Midterm Bug Hunter</span>
+        </button>
+        <button data-lab="runners" class="lab-tab-btn px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium text-[var(--text-secondary)] flex items-center gap-1.5 whitespace-nowrap">
+          <i data-lucide="activity" class="w-4 h-4"></i><span>3. Two Runners (Lab 7)</span>
+        </button>
+        <button data-lab="traps" class="lab-tab-btn px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium text-[var(--text-secondary)] flex items-center gap-1.5 whitespace-nowrap">
+          <i data-lucide="zap" class="w-4 h-4"></i><span>4. Trap Dissector</span>
+        </button>
+        <button data-lab="binary" class="lab-tab-btn px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium text-[var(--text-secondary)] flex items-center gap-1.5 whitespace-nowrap">
+          <i data-lucide="cpu" class="w-4 h-4"></i><span>5. Binary & ASCII</span>
+        </button>
+      </div>
+
+      <!-- LAB 1: PATTERN MATRIX -->
+      <div id="lab-pane-pattern" class="lab-pane grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <div class="lg:col-span-5 bento-card rounded-3xl p-5 flex flex-col gap-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <span class="text-[11px] font-semibold uppercase tracking-wider text-apple-blue">Lec 08 & Lab 08 · Nested Loops</span>
+              <h2 class="text-lg font-bold">2D Pattern Visualizer</h2>
+            </div>
+            <span id="pat-iter-badge" class="px-2.5 py-1 rounded-full elevated font-mono text-xs font-semibold">Ready</span>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+            <button data-pat="triangle" class="pat-btn px-2.5 py-2 rounded-xl text-xs font-semibold bg-apple-blue text-white">Number Triangle</button>
+            <button data-pat="revstar" class="pat-btn px-2.5 py-2 rounded-xl text-xs font-medium elevated">Reversed * (Lab 8)</button>
+            <button data-pat="identity" class="pat-btn px-2.5 py-2 rounded-xl text-xs font-medium elevated">Identity (i==j)</button>
+            <button data-pat="hollow" class="pat-btn px-2.5 py-2 rounded-xl text-xs font-medium elevated">Hollow Square</button>
+            <button data-pat="xshape" class="pat-btn px-2.5 py-2 rounded-xl text-xs font-medium elevated">X-Pattern</button>
+            <button data-pat="mult" class="pat-btn px-2.5 py-2 rounded-xl text-xs font-medium elevated">Mult Table</button>
+          </div>
+          <div class="elevated rounded-2xl p-3.5 space-y-2">
+            <div class="flex justify-between text-xs font-medium">
+              <span>Size (<span class="font-mono text-apple-blue">int n</span>)</span>
+              <span id="pat-n-label" class="font-mono font-bold text-apple-blue">n = 5</span>
+            </div>
+            <input id="pat-n-slider" type="range" min="3" max="7" value="5" class="w-full accent-[#0A84FF]" />
+          </div>
+          <div id="pat-code-view" class="rounded-2xl p-3.5 bg-[var(--code-bg)] border border-[var(--border-hairline)] font-mono text-xs leading-relaxed overflow-x-auto space-y-0.5"></div>
+          <div id="pat-explain" class="rounded-2xl p-3.5 elevated text-xs sm:text-sm rtl text-right leading-relaxed"></div>
+          <div class="flex items-center justify-between gap-2 pt-1 mt-auto">
+            <button id="pat-reset" class="px-3 py-2 rounded-xl elevated hover:border-apple-blue text-xs font-medium flex items-center gap-1.5"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i><span>Reset</span></button>
+            <div class="flex items-center gap-2">
+              <button id="pat-step" class="px-3.5 py-2 rounded-xl elevated hover:border-apple-blue text-xs font-semibold flex items-center gap-1.5"><i data-lucide="step-forward" class="w-3.5 h-3.5"></i><span>Step</span></button>
+              <button id="pat-play" class="px-4 py-2 rounded-xl btn-primary text-white text-xs font-semibold flex items-center gap-1.5"><i id="pat-play-icon" data-lucide="play" class="w-3.5 h-3.5 fill-current"></i><span id="pat-play-label">Animate</span></button>
+            </div>
+          </div>
+        </div>
+        <div class="lg:col-span-7 flex flex-col gap-4">
+          <div class="bento-card rounded-3xl p-5 flex-1 flex flex-col">
+            <div class="flex items-center justify-between mb-3">
+              <div class="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">2D Matrix (Row i × Col j)</div>
+              <span id="pat-cond-badge" class="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-apple-blue/15 text-apple-blue"></span>
+            </div>
+            <div class="flex-1 flex items-center justify-center py-2 overflow-x-auto"><div id="pat-matrix-grid" class="grid gap-2"></div></div>
+          </div>
+          <div class="bento-card rounded-3xl p-4">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Live Console (cout)</span>
+              <span id="pat-total-runs" class="font-mono text-[11px] text-[var(--text-secondary)]">0 steps</span>
+            </div>
+            <pre id="pat-console" class="rounded-2xl p-3.5 bg-[var(--code-bg)] border border-[var(--border-hairline)] font-mono text-xs sm:text-sm min-h-[110px] text-apple-green overflow-x-auto"></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- LAB 2: MIDTERM BUG HUNTER (EXACT Q3a & Q3b FROM FALL 2026 MIDTERM) -->
+      <div id="lab-pane-bughunter" class="lab-pane hidden grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <div class="lg:col-span-5 bento-card rounded-3xl p-5 flex flex-col gap-4">
+          <div>
+            <span class="text-[11px] font-bold uppercase tracking-wider text-apple-red">Official Fall 2026 Midterm · Question 3</span>
+            <h2 class="text-lg font-bold mt-0.5">Interactive Bug Hunter</h2>
+            <p class="text-xs text-[var(--text-secondary)] rtl text-right mt-1">
+              اضغط على السطور اللي فيها أخطاء في كود الميدترم الحقيقي عشان تكتشفها وتفهم هل هي Syntax ولا Logic Error!
+            </p>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <button data-bh="q3a" class="bh-case-btn p-3 rounded-2xl bg-apple-blue/15 border border-apple-blue text-left text-xs font-semibold">
+              <div>Part (a) · 2 pts</div>
+              <div class="text-[11px] text-[var(--text-secondary)] mt-0.5">2 Logic Errors (Dangling else)</div>
+            </button>
+            <button data-bh="q3b" class="bh-case-btn p-3 rounded-2xl elevated text-left text-xs font-medium">
+              <div>Part (b) · 5 pts</div>
+              <div class="text-[11px] text-[var(--text-secondary)] mt-0.5">1 Syntax + 4 Logic Errors</div>
+            </button>
+          </div>
+          <div id="bh-objective" class="rounded-2xl p-3.5 elevated text-xs leading-relaxed"></div>
+          <div class="flex items-center justify-between text-xs font-semibold">
+            <span id="bh-found-counter" class="text-apple-green">Found: 0 / 2</span>
+            <div class="flex gap-2">
+              <button id="bh-reveal-all" class="px-3 py-1.5 rounded-xl elevated hover:border-apple-orange text-xs">Reveal All</button>
+              <button id="bh-reset" class="px-3 py-1.5 rounded-xl elevated hover:border-apple-blue text-xs">Reset</button>
+            </div>
+          </div>
+          <div id="bh-log" class="space-y-2 overflow-y-auto max-h-60"></div>
+        </div>
+        <div class="lg:col-span-7 bento-card rounded-3xl p-5 flex flex-col gap-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Click any suspicious line below</span>
+            <span class="text-[11px] font-mono text-apple-blue">midterm_q3.cpp</span>
+          </div>
+          <div id="bh-code-lines" class="rounded-2xl p-3 bg-[var(--code-bg)] border border-[var(--border-hairline)] font-mono text-xs sm:text-[13px] space-y-1 overflow-x-auto"></div>
+          <div id="bh-fixed-box" class="hidden rounded-2xl p-4 bg-apple-green/10 border border-apple-green/30 space-y-2">
+            <div class="text-xs font-bold text-apple-green">All Bugs Found — Official Corrected Code ✓</div>
+            <pre id="bh-fixed-code" class="font-mono text-xs overflow-x-auto"></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- LAB 3: TWO RUNNERS ARENA (LAB 7 EXERCISE 5) -->
+      <div id="lab-pane-runners" class="lab-pane hidden grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <div class="lg:col-span-5 bento-card rounded-3xl p-5 space-y-4">
+          <div>
+            <span class="text-[11px] font-semibold uppercase tracking-wider text-apple-teal">Lab 07 · Exercise 5 (Comma Operator)</span>
+            <h2 class="text-lg font-bold">Two Runners Meeting Track</h2>
+            <p class="text-xs text-[var(--text-secondary)] rtl text-right mt-1">
+              مثال الـ <span class="font-mono">for</span> بمتغيرين في نفس الهيدر: Runner A يبدأ من 0 ويزيد +3، و Runner B يبدأ من 20 وينقص -2 لحد ما يتقابلوا عند 12!
+            </p>
+          </div>
+          <pre class="rounded-2xl p-3.5 bg-[var(--code-bg)] border border-[var(--border-hairline)] font-mono text-xs overflow-x-auto" id="runners-code"></pre>
+          <div class="flex items-center justify-between gap-2">
+            <button id="run-reset" class="px-3.5 py-2 rounded-xl elevated hover:border-apple-blue text-xs font-semibold">Reset</button>
+            <div class="flex gap-2">
+              <button id="run-step" class="px-4 py-2 rounded-xl elevated hover:border-apple-blue text-xs font-semibold">Next Step</button>
+              <button id="run-play" class="px-4 py-2 rounded-xl btn-primary text-white text-xs font-semibold">Run Race</button>
+            </div>
+          </div>
+        </div>
+        <div class="lg:col-span-7 bento-card rounded-3xl p-5 flex flex-col justify-between gap-5">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between text-xs font-mono">
+              <span class="text-apple-blue font-bold" id="r1-pos-lbl">Runner 1 (r1): 0</span>
+              <span id="runners-status" class="px-2.5 py-0.5 rounded-full elevated text-[11px]">Step 0</span>
+              <span class="text-apple-orange font-bold" id="r2-pos-lbl">Runner 2 (r2): 20</span>
+            </div>
+            <!-- 0..20 Track -->
+            <div class="relative pt-10 pb-6 px-3 rounded-2xl elevated">
+              <div class="h-2 rounded-full bg-[var(--border-hairline)] relative">
+                <div id="r1-marker" class="absolute -top-8 -translate-x-1/2 flex flex-col items-center transition-all duration-300" style="left:0%">
+                  <span class="px-2 py-0.5 rounded-lg bg-apple-blue text-white font-mono text-[10px] font-bold">R1</span>
+                  <div class="w-3 h-3 rounded-full bg-apple-blue border-2 border-white mt-1"></div>
+                </div>
+                <div id="r2-marker" class="absolute -top-8 -translate-x-1/2 flex flex-col items-center transition-all duration-300" style="left:100%">
+                  <span class="px-2 py-0.5 rounded-lg bg-apple-orange text-white font-mono text-[10px] font-bold">R2</span>
+                  <div class="w-3 h-3 rounded-full bg-apple-orange border-2 border-white mt-1"></div>
+                </div>
+              </div>
+              <div class="flex justify-between font-mono text-[10px] text-[var(--text-secondary)] mt-3">
+                <span>0</span><span>4</span><span>8</span><span class="text-apple-green font-bold">12 (Meet!)</span><span>16</span><span>20</span>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-1.5">
+            <div class="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Live Console Output</div>
+            <pre id="runners-console" class="rounded-2xl p-3.5 bg-[var(--code-bg)] border border-[var(--border-hairline)] font-mono text-xs text-apple-green min-h-[115px]"></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- LAB 4: TRAP DISSECTOR -->
+      <div id="lab-pane-traps" class="lab-pane hidden grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <div class="lg:col-span-4 bento-card rounded-3xl p-4 space-y-2">
+          <div class="px-2 py-1 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">C-CS111 Exam Traps</div>
+          <button data-trap="range" class="trap-sel-btn w-full text-left p-3.5 rounded-2xl bg-apple-blue/15 border border-apple-blue text-xs sm:text-sm font-semibold"><div>1. Chained Range</div><div class="font-mono text-[11px] text-[var(--text-secondary)]">0 &lt;= grade &lt;= 100</div></button>
+          <button data-trap="notgt" class="trap-sel-btn w-full text-left p-3.5 rounded-2xl elevated text-xs sm:text-sm font-medium"><div>2. Precedence Trap (!)</div><div class="font-mono text-[11px] text-[var(--text-secondary)]">!time &gt; limit (Lec 4 / Lab 5)</div></button>
+          <button data-trap="inc" class="trap-sel-btn w-full text-left p-3.5 rounded-2xl elevated text-xs sm:text-sm font-medium"><div>3. Prefix vs Postfix</div><div class="font-mono text-[11px] text-[var(--text-secondary)]">++n vs n++ Memory Box</div></button>
+          <button data-trap="semi" class="trap-sel-btn w-full text-left p-3.5 rounded-2xl elevated text-xs sm:text-sm font-medium"><div>4. Extra Semicolon</div><div class="font-mono text-[11px] text-[var(--text-secondary)]">for (i=1; i&lt;=5; i++);</div></button>
+        </div>
+        <div id="trap-stage" class="lg:col-span-8 bento-card rounded-3xl p-6 space-y-5"></div>
+      </div>
+
+      <!-- LAB 5: BINARY & ASCII -->
+      <div id="lab-pane-binary" class="lab-pane hidden grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <div class="lg:col-span-7 bento-card rounded-3xl p-6 space-y-5">
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <div><span class="text-[11px] font-semibold uppercase tracking-wider text-apple-blue">Lec 01 · Slide 27</span><h2 class="text-lg font-bold">8-Bit Byte Switchboard</h2></div>
+            <div class="flex gap-1.5">
+              <button data-byte-preset="157" class="byte-preset px-2.5 py-1 rounded-xl elevated text-xs font-mono hover:border-apple-blue">157</button>
+              <button data-byte-preset="65" class="byte-preset px-2.5 py-1 rounded-xl elevated text-xs font-mono hover:border-apple-blue">'A' (65)</button>
+              <button data-byte-preset="97" class="byte-preset px-2.5 py-1 rounded-xl elevated text-xs font-mono hover:border-apple-blue">'a' (97)</button>
+              <button data-byte-preset="0" class="byte-preset px-2.5 py-1 rounded-xl elevated text-xs font-mono hover:border-apple-blue">Clear</button>
+            </div>
+          </div>
+          <div id="bit-switches" class="grid grid-cols-4 sm:grid-cols-8 gap-2"></div>
+          <div class="rounded-2xl p-4 elevated flex flex-wrap items-center justify-between gap-3">
+            <div><div class="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">Binary Formula</div><div id="bin-formula" class="font-mono text-xs sm:text-sm font-semibold"></div></div>
+            <div class="flex items-center gap-3">
+              <div class="text-center px-3.5 py-2 rounded-xl bento-card"><div class="text-[10px] text-[var(--text-secondary)]">Decimal</div><div id="bin-dec" class="text-xl font-extrabold font-mono text-apple-blue">157</div></div>
+              <div class="text-center px-3.5 py-2 rounded-xl bento-card"><div class="text-[10px] text-[var(--text-secondary)]">ASCII</div><div id="bin-ascii" class="text-xl font-extrabold font-mono text-apple-green">—</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="lg:col-span-5 bento-card rounded-3xl p-6 space-y-4">
+          <div><span class="text-[11px] font-semibold uppercase tracking-wider text-apple-purple">Lec 04 · Slide 37</span><h2 class="text-lg font-bold">ASCII Comparator</h2></div>
+          <div class="grid grid-cols-3 items-center gap-2">
+            <input id="ascii-c1" type="text" maxlength="1" value="a" class="elevated rounded-2xl py-3 text-center font-mono text-xl font-bold outline-none focus:border-apple-blue" aria-label="Char 1" />
+            <div class="text-center font-mono text-lg font-bold text-apple-blue">&gt;</div>
+            <input id="ascii-c2" type="text" maxlength="1" value="Z" class="elevated rounded-2xl py-3 text-center font-mono text-xl font-bold outline-none focus:border-apple-blue" aria-label="Char 2" />
+          </div>
+          <div id="ascii-compare-out" class="rounded-2xl p-4 bg-[var(--code-bg)] border border-[var(--border-hairline)] font-mono text-xs sm:text-sm space-y-1.5"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- VIEW 3: PRO IDE STUDIO (17 CHALLENGES: LECTURES + LABS + MIDTERM)   -->
+    <!-- =================================================================== -->
+    <section id="view-studio" class="view-section view-animate hidden space-y-3.5">
+      <div class="bento-card rounded-2xl px-3.5 py-2.5 flex flex-wrap items-center justify-between gap-2.5">
+        <div class="flex items-center gap-2 min-w-0 flex-1 flex-wrap">
+          <select id="challenge-source-filter" class="elevated rounded-xl px-2.5 py-1.5 text-xs font-semibold outline-none focus:border-apple-blue">
+            <option value="all">All (17)</option>
+            <option value="lab">Labs 5–8 (7)</option>
+            <option value="lec">Lectures & Midterm (10)</option>
+          </select>
+          <select id="challenge-select" class="elevated rounded-xl px-3 py-1.5 text-xs sm:text-sm font-semibold outline-none focus:border-apple-blue max-w-full truncate"></select>
+          <select id="compiler-mode" class="elevated rounded-xl px-2.5 py-1.5 text-xs font-semibold outline-none focus:border-apple-blue text-apple-teal" title="Select C++ Execution Engine">
+            <option value="local">Fast Runner (Local)</option>
+            <option value="judge0">Real g++ (Judge0 CE)</option>
+          </select>
+          <span id="challenge-diff" class="hidden md:inline-flex px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-apple-blue/15 text-apple-blue shrink-0"></span>
+        </div>
+        <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <button id="btn-font-dec" class="hidden md:flex w-8 h-8 rounded-xl elevated items-center justify-center text-xs font-mono hover:border-apple-blue">A-</button>
+          <button id="btn-font-inc" class="hidden md:flex w-8 h-8 rounded-xl elevated items-center justify-center text-xs font-mono hover:border-apple-blue">A+</button>
+          <button id="btn-hint" class="px-2.5 py-1.5 rounded-xl elevated hover:border-apple-orange text-xs font-medium flex items-center gap-1.5"><i data-lucide="lightbulb" class="w-3.5 h-3.5 text-apple-orange"></i><span class="hidden sm:inline">Hint</span></button>
+          <button id="btn-explain" class="px-2.5 py-1.5 rounded-xl elevated hover:border-apple-purple text-xs font-medium flex items-center gap-1.5"><i data-lucide="book-open" class="w-3.5 h-3.5 text-apple-purple"></i><span class="hidden sm:inline" data-i18n="btn_explain">Explain</span></button>
+          <button id="btn-solution" class="px-2.5 py-1.5 rounded-xl elevated hover:border-apple-blue text-xs font-medium flex items-center gap-1.5"><i data-lucide="sparkles" class="w-3.5 h-3.5 text-apple-blue"></i><span class="hidden sm:inline" data-i18n="btn_solution">Solution</span></button>
+          <button id="btn-reset-code" class="w-8 h-8 rounded-xl elevated hover:border-apple-red flex items-center justify-center" title="Reset"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i></button>
+          <button id="btn-run-code" class="px-4 py-1.5 rounded-xl btn-primary text-white text-xs sm:text-sm font-semibold flex items-center gap-1.5 shadow-md shadow-apple-blue/25">
+            <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i><span>Run</span><span class="hidden md:inline text-[10px] opacity-75 font-mono">⌘↵</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="lg:hidden grid grid-cols-3 gap-1 p-1 rounded-2xl elevated">
+        <button data-mpane="problem" class="mpane-btn py-1.5 rounded-xl text-xs font-semibold bg-apple-blue text-white">Problem</button>
+        <button data-mpane="code" class="mpane-btn py-1.5 rounded-xl text-xs font-semibold text-[var(--text-secondary)]">Code</button>
+        <button data-mpane="output" class="mpane-btn py-1.5 rounded-xl text-xs font-semibold text-[var(--text-secondary)]">Output</button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+        <div id="pane-problem" class="lg:col-span-5 bento-card rounded-3xl p-5 flex flex-col gap-4 overflow-y-auto lg:max-h-[75vh]">
+          <div class="flex items-start justify-between gap-2">
+            <div><div id="prob-lec" class="text-[11px] font-semibold text-apple-blue uppercase tracking-wider"></div><h2 id="prob-title" class="text-lg font-bold mt-0.5"></h2></div>
+            <span id="prob-status" class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold elevated text-[var(--text-secondary)]">Unsolved</span>
+          </div>
+          <p id="prob-ar" class="text-sm leading-relaxed rtl text-right"></p>
+          <p id="prob-en" class="text-xs leading-relaxed text-[var(--text-secondary)]"></p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div class="rounded-2xl p-3 bg-[var(--code-bg)] border border-[var(--border-hairline)]"><div class="text-[10px] uppercase tracking-wider text-[var(--text-secondary)] mb-1">Sample Input</div><pre id="prob-in" class="font-mono text-xs overflow-x-auto"></pre></div>
+            <div class="rounded-2xl p-3 bg-[var(--code-bg)] border border-[var(--border-hairline)]"><div class="text-[10px] uppercase tracking-wider text-[var(--text-secondary)] mb-1">Expected Output</div><pre id="prob-out" class="font-mono text-xs text-apple-green overflow-x-auto"></pre></div>
+          </div>
+          <div id="prob-hint-box" class="hidden rounded-2xl p-3.5 bg-apple-orange/10 border border-apple-orange/30 text-xs rtl text-right leading-relaxed"><div class="font-semibold text-apple-orange mb-1">تلميح (Hint)</div><div id="prob-hint-text"></div></div>
+          <div id="prob-explain-box" class="hidden rounded-2xl p-3.5 bg-apple-purple/10 border border-apple-purple/30 text-xs rtl text-right leading-relaxed space-y-1.5"><div class="font-bold text-apple-purple">شرح خطوات الحل (Step-by-Step Breakdown)</div><div id="prob-explain-text"></div></div>
+          <div class="mt-auto pt-3 border-t border-[var(--border-hairline)] space-y-1.5">
+            <label for="custom-cin" class="text-xs font-medium text-[var(--text-secondary)] flex justify-between"><span>Custom Test Input</span><span class="font-mono text-[11px] text-apple-blue">cin &gt;&gt;</span></label>
+            <input id="custom-cin" type="text" class="w-full rounded-xl px-3 py-2 bg-[var(--code-bg)] border border-[var(--border-hairline)] font-mono text-xs outline-none focus:border-apple-blue" />
+          </div>
+        </div>
+
+        <div class="lg:col-span-7 flex flex-col gap-4">
+          <div id="pane-code" class="bento-card rounded-3xl overflow-hidden flex flex-col">
+            <div class="px-4 py-2.5 border-b border-[var(--border-hairline)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
+              <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#FF5F56]"></span><span class="w-2.5 h-2.5 rounded-full bg-[#FFBD2E]"></span><span class="w-2.5 h-2.5 rounded-full bg-[#27C93F]"></span><span class="ml-1.5 font-mono text-[11px] font-semibold text-[var(--text-primary)]">main.cpp</span></div>
+              <button id="btn-copy-code" class="text-[11px] hover:text-apple-blue flex items-center gap-1"><i data-lucide="copy" class="w-3 h-3"></i><span>Copy</span></button>
+            </div>
+            <div class="ide-shell flex h-72 sm:h-80 overflow-hidden">
+              <div id="ide-gutter" class="ide-gutter">1</div>
+              <div class="ide-editor-wrap">
+                <pre id="code-highlight" class="ide-highlight" aria-hidden="true"></pre>
+                <textarea id="code-editor" class="ide-textarea" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" aria-label="C++ Code Editor"></textarea>
+              </div>
+            </div>
+            <div class="px-3 py-2 border-t border-[var(--border-hairline)] bg-[var(--bg-elevated)] flex items-center gap-1.5 overflow-x-auto">
+              <button data-sym="{ }" class="sym-btn px-2.5 py-1 rounded-lg bento-card font-mono text-xs hover:border-apple-blue shrink-0">{ }</button>
+              <button data-sym=";" class="sym-btn px-2.5 py-1 rounded-lg bento-card font-mono text-xs hover:border-apple-blue shrink-0">;</button>
+              <button data-sym=" << " class="sym-btn px-2.5 py-1 rounded-lg bento-card font-mono text-xs hover:border-apple-blue shrink-0">&lt;&lt;</button>
+              <button data-sym=" >> " class="sym-btn px-2.5 py-1 rounded-lg bento-card font-mono text-xs hover:border-apple-blue shrink-0">&gt;&gt;</button>
+              <button data-sym=" == " class="sym-btn px-2.5 py-1 rounded-lg bento-card font-mono text-xs hover:border-apple-blue shrink-0">==</button>
+              <button data-sym=" != " class="sym-btn px-2.5 py-1 rounded-lg bento-card font-mono text-xs hover:border-apple-blue shrink-0">!=</button>
+              <button data-sym=" && " class="sym-btn px-2.5 py-1 rounded-lg bento-card font-mono text-xs hover:border-apple-blue shrink-0">&amp;&amp;</button>
+              <button data-sym=" || " class="sym-btn px-2.5 py-1 rounded-lg bento-card font-mono text-xs hover:border-apple-blue shrink-0">||</button>
+              <button data-sym=" /= 10;" class="sym-btn px-2.5 py-1 rounded-lg bento-card font-mono text-xs hover:border-apple-blue shrink-0">/= 10;</button>
+              <button data-sym=" % 10" class="sym-btn px-2.5 py-1 rounded-lg bento-card font-mono text-xs hover:border-apple-blue shrink-0">% 10</button>
+              <button data-sym="endl;" class="sym-btn px-2.5 py-1 rounded-lg bento-card font-mono text-xs hover:border-apple-blue shrink-0">endl;</button>
+            </div>
+          </div>
+
+          <div id="pane-output" class="bento-card rounded-3xl p-4 space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2"><span class="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Test Results & Terminal</span><span id="run-ms" class="hidden px-2 py-0.5 rounded-full elevated font-mono text-[11px] text-[var(--text-secondary)]"></span></div>
+              <span id="run-summary" class="text-xs font-semibold"></span>
+            </div>
+            <div id="test-list" class="space-y-2"></div>
+            <pre id="console-out" class="rounded-2xl p-3.5 bg-[var(--code-bg)] border border-[var(--border-hairline)] font-mono text-xs min-h-[54px] max-h-40 overflow-auto whitespace-pre-wrap">Press Run (or Ctrl/Cmd + Enter) to test your C++ code...</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- VIEW 4: MIDTERM & LAB EXAM SIMULATOR (16 REAL QUESTIONS)            -->
+    <!-- =================================================================== -->
+    <section id="view-exam" class="view-section view-animate hidden max-w-4xl mx-auto space-y-4">
+      <div class="bento-card rounded-3xl p-5 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <span class="text-[11px] font-semibold uppercase tracking-wider text-apple-blue">Official Fall 2026 Midterm + Labs 4–8</span>
+          <h2 class="text-lg font-bold">19-Question Exam Simulator</h2>
+        </div>
+        <div class="flex items-center gap-2.5">
+          <div class="px-3.5 py-1.5 rounded-xl elevated font-mono text-sm font-bold flex items-center gap-2"><i data-lucide="clock" class="w-4 h-4 text-apple-blue"></i><span id="exam-timer">20:00</span></div>
+          <button id="exam-restart" class="px-3.5 py-1.5 rounded-xl elevated hover:border-apple-blue text-xs font-semibold">Restart</button>
+        </div>
+      </div>
+
+      <div id="exam-pills" class="flex flex-wrap gap-1.5"></div>
+
+      <div id="exam-card" class="bento-card rounded-3xl p-6 space-y-4">
+        <div class="flex items-center justify-between text-xs text-[var(--text-secondary)]">
+          <span id="exam-q-num" class="font-bold text-apple-blue">Question 1 of 16</span>
+          <span id="exam-q-topic" class="px-2.5 py-0.5 rounded-full elevated"></span>
+        </div>
+        <h3 id="exam-q-prompt" class="text-base font-bold leading-snug"></h3>
+        <pre id="exam-q-code" class="hidden rounded-2xl p-4 bg-[var(--code-bg)] border border-[var(--border-hairline)] font-mono text-xs sm:text-[13px] overflow-x-auto"></pre>
+        <div id="exam-options" class="grid grid-cols-1 gap-2.5"></div>
+        <div id="exam-feedback" class="hidden rounded-2xl p-4 text-xs sm:text-sm rtl text-right leading-relaxed"></div>
+        <div class="pt-3 border-t border-[var(--border-hairline)] flex items-center justify-between">
+          <button id="exam-prev" class="px-4 py-2 rounded-xl elevated text-xs sm:text-sm font-medium">Previous</button>
+          <div class="flex items-center gap-2">
+            <button id="exam-next" class="px-4 py-2 rounded-xl elevated hover:border-apple-blue text-xs sm:text-sm font-medium">Next</button>
+            <button id="exam-submit" class="px-5 py-2 rounded-xl btn-primary text-white text-xs sm:text-sm font-semibold shadow-md shadow-apple-blue/25">Submit Exam</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="exam-result" class="hidden bento-card rounded-3xl p-8 text-center space-y-4">
+        <div id="exam-grade-badge" class="w-20 h-20 rounded-3xl bg-apple-blue/15 text-apple-blue text-3xl font-extrabold flex items-center justify-center mx-auto">A+</div>
+        <div><h3 id="exam-score-text" class="text-2xl font-extrabold"></h3><p id="exam-score-sub" class="text-sm text-[var(--text-secondary)] mt-1 rtl"></p></div>
+        <div class="text-xs text-[var(--text-secondary)]">EUI Scale: A+ ≥ 96% · A ≥ 92% · B+ ≥ 84% · C ≥ 68% · Pass ≥ 50%</div>
+        <div class="flex justify-center gap-3 pt-2">
+          <button id="exam-review" class="px-4 py-2 rounded-xl elevated hover:border-apple-blue text-sm font-semibold">Review Explanations</button>
+          <button id="exam-retake" class="px-5 py-2 rounded-xl btn-primary text-white text-sm font-semibold">Retake</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="theme-wipe" aria-hidden="true"></div>
+  <footer class="border-t border-[var(--border-hairline)]">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-2.5 text-[11px] text-center sm:text-left text-[var(--text-secondary)]">
+      <div class="flex items-center gap-2">
+        <div class="logo-mark w-5 h-5 rounded-md flex items-center justify-center text-white font-mono font-bold text-[8px]">C++</div>
+        <span class="font-semibold text-[var(--text-primary)]">C++ Studio</span>
+        <span>· EUI C-CS111 Interactive Platform</span>
+      </div>
+      <div class="font-medium">17 Challenges · 5 Labs · Fall 2026</div>
+    </div>
+  </footer>
+
+  <script>
+    // =========================================================================
+    // 1. COMPLETE C-CS111 DATASET (LECTURES 1-8 + LABS 1-8 + FALL 2026 MIDTERM)
+    // =========================================================================
+    const MODULES = [
+      { id: 'm1', tag: 'Lec 01 + Lab 01', cat: 'basics', title: 'Binary, ASCII & Problem Solving', ar: 'النظام الثنائي والـ ASCII وألغاز منطقية.', action: 'lab', target: 'binary', ch: null },
+      { id: 'm2', tag: 'Lec 02 + Lab 2–3', cat: 'basics', title: 'Flowcharts & Pseudocode', ar: 'رموز الـ Flowchart والـ Locker Problem.', action: 'studio', target: 'ch_largest', ch: 'ch_largest' },
+      { id: 'm3', tag: 'Lec 03 + Lab 04', cat: 'basics', title: 'C++ Basics & Operator Arena', ar: 'المتغيرات وأولوية العمليات.', action: 'studio', target: 'ch_digits', ch: 'ch_digits' },
+      { id: 'm4', tag: 'Lec 04 + Lab 05', cat: 'decisions', title: 'Decisions, switch & Ternary', ar: 'Nested if و switch/break و ? :', action: 'studio', target: 'ch_weather', ch: 'ch_weather' },
+      { id: 'm4b', tag: 'Midterm Q3 Focus', cat: 'decisions', title: 'Midterm Bug Hunter Lab', ar: 'اصطد أخطاء امتحان الميدترم الفعلي.', action: 'lab', target: 'bughunter', ch: 'ch_midterm_grades' },
+      { id: 'm5', tag: 'Lec 05 + Lab 06', cat: 'loops', title: 'while, do-while & Digits', ar: 'عدّ الأرقام ومجموع الخانات.', action: 'studio', target: 'ch_even_odd_digits', ch: 'ch_even_odd_digits' },
+      { id: 'm6', tag: 'Lec 06 + Lab 07', cat: 'loops', title: 'for Loop, Flags & Two Runners', ar: 'الـ Prime وسباق الـ Two Runners.', action: 'lab', target: 'runners', ch: 'ch_prime' },
+      { id: 'm8', tag: 'Lec 08 + Lab 08', cat: 'loops', title: 'Nested Loops, Primes & Patterns', ar: 'أعداد أولية وأنماط 2D.', action: 'lab', target: 'pattern', ch: 'ch_primes_n' },
+      { id: 'm9', tag: 'Lec 09 · Functions Pt.1', cat: 'functions', title: 'Functions: Define, Call & Pass by Value', ar: 'تعريف الدالة واستدعاؤها والـ Pass by Value.', action: 'studio', target: 'ch_fn_even_odd', ch: 'ch_fn_even_odd' }
+    ];
+
+    const CHALLENGES = [
+      // --- LAB 5–8 REAL CHALLENGES ---
+      {
+        id: 'ch_even_odd_digits', src: 'lab', lec: 'Lab 06 · Slide 13 (TRY)', title: 'Sum of Even & Odd Digits', diff: 'Lab Boss',
+        ar: 'اقرأ رقم صحيح n (مثلاً 2345) واحسب مجموع الخانات الزوجية ومجموع الخانات الفردية باستخدام while loop و % 10 و /= 10.',
+        en: 'Read integer n. Extract each digit using (n % 10) and (n /= 10). Print "Even: <sum>" and "Odd: <sum>".',
+        sampleIn: '2345', sampleOut: 'Even: 6\nOdd: 8',
+        hint: 'جوه while (n != 0): int d = n % 10; لو d % 2 == 0 ضيفه لـ evenSum وإلا oddSum، وبعدين n /= 10;',
+        starter: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    int evenSum = 0, oddSum = 0;\n    // Extract digits with while (n != 0)\n    \n    cout << "Even: " << evenSum << endl;\n    cout << "Odd: " << oddSum << endl;\n    return 0;\n}`,
+        solution: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    int evenSum = 0, oddSum = 0;\n    while (n != 0) {\n        int digit = n % 10;\n        if (digit % 2 == 0) evenSum += digit;\n        else oddSum += digit;\n        n /= 10;\n    }\n    cout << "Even: " << evenSum << endl;\n    cout << "Odd: " << oddSum << endl;\n    return 0;\n}`,
+        tests: [{ input: '2345', expected: 'Even: 6\nOdd: 8' }, { input: '8642', expected: 'Even: 20\nOdd: 0' }, { input: '135', expected: 'Even: 0\nOdd: 9' }]
+      },
+      {
+        id: 'ch_digits', src: 'lab', lec: 'Lab 06 · Q5', title: 'Count Digits of a Number', diff: 'Lab Core',
+        ar: 'اقرأ رقم صحيح موجب n واحسب عدد خاناته (Digits) باستخدام القسمة الصحيحة على 10 (مثال: 324 → 3).',
+        en: 'Read positive integer n and print how many digits it has using while (n != 0) and n = n / 10.',
+        sampleIn: '324', sampleOut: '3',
+        hint: 'كل مرة تقسم n على 10 (n /= 10) زوّد count++ لحد ما n تبقى 0.',
+        starter: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    int count = 0;\n    // Count digits\n    \n    cout << count << endl;\n    return 0;\n}`,
+        solution: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    int count = 0;\n    while (n != 0) {\n        n = n / 10;\n        count++;\n    }\n    cout << count << endl;\n    return 0;\n}`,
+        tests: [{ input: '324', expected: '3' }, { input: '90015', expected: '5' }, { input: '7', expected: '1' }]
+      },
+      {
+        id: 'ch_primes_n', src: 'lab', lec: 'Lab 08 · Example 2', title: 'All Primes from 1 to N', diff: 'Lab Boss',
+        ar: 'اقرأ رقم موجب n واطبع كل الأعداد الأولية (Prime Numbers) من 2 لحد n مفصولة بمسافة باستخدام Nested Loops.',
+        en: 'Read positive integer n and print all prime numbers from 2 to n separated by spaces using nested loops.',
+        sampleIn: '20', sampleOut: '2 3 5 7 11 13 17 19',
+        hint: 'لكل i من 2 لـ n، عدّ قواسمه بـ counter باستخدام حلقة j من 1 لـ i؛ لو counter == 2 يبقى أولي!',
+        starter: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    // Nested loops to find all primes up to n\n    \n    return 0;\n}`,
+        solution: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    for (int i = 2; i <= n; i++) {\n        int counter = 0;\n        for (int j = 1; j <= i; j++) {\n            if (i % j == 0) counter++;\n        }\n        if (counter == 2) cout << i << " ";\n    }\n    return 0;\n}`,
+        tests: [{ input: '20', expected: '2 3 5 7 11 13 17 19' }, { input: '30', expected: '2 3 5 7 11 13 17 19 23 29' }, { input: '5', expected: '2 3 5' }]
+      },
+      {
+        id: 'ch_fact_n', src: 'lab', lec: 'Lab 08 · Exercise 1', title: 'Factorials from 0! to N!', diff: 'Lab Core',
+        ar: 'اقرأ رقم n واطبع مضروب كل رقم من 0 لحد n بالشكل: 0! = 1 وهكذا لحد n! باستخدام Nested Loops.',
+        en: 'Read n and print factorials from 0! to n! in format "i! = fact" using nested for loops.',
+        sampleIn: '4', sampleOut: '0! = 1\n1! = 1\n2! = 2\n3! = 6\n4! = 24',
+        hint: 'الحلقة الخارجية i من 0 لـ n، وجواها int fact = 1; وحلقة داخلية j من 1 لـ i تضرب fact *= j.',
+        starter: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    // Print 0! to n!\n    \n    return 0;\n}`,
+        solution: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    for (int i = 0; i <= n; i++) {\n        int fact = 1;\n        for (int j = 1; j <= i; j++) {\n            fact = fact * j;\n        }\n        cout << i << "! = " << fact << endl;\n    }\n    return 0;\n}`,
+        tests: [{ input: '4', expected: '0! = 1\n1! = 1\n2! = 2\n3! = 6\n4! = 24' }, { input: '2', expected: '0! = 1\n1! = 1\n2! = 2' }]
+      },
+      {
+        id: 'ch_prime', src: 'lab', lec: 'Lab 07 · Exercise 4 (Flag)', title: 'Prime Check (bool Flag)', diff: 'Lab Core',
+        ar: 'اقرأ رقم n وتحقق هل هو أولي باستخدام bool isPrime = true. اطبع "Prime" أو "Not Prime".',
+        en: 'Read n and check primality using a bool flag isPrime. Print "Prime" or "Not Prime".',
+        sampleIn: '13', sampleOut: 'Prime',
+        hint: 'تأكد إن n > 1، ولو لقيت أي i بين 2 و n-1 يقبل n % i == 0 خلّي isPrime = false.',
+        starter: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    bool isPrime = true;\n    // Check divisors from 2 to n-1\n    \n    return 0;\n}`,
+        solution: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    bool isPrime = true;\n    for (int i = 2; i < n; i++) {\n        if (n % i == 0) isPrime = false;\n    }\n    if (isPrime && n > 1) cout << "Prime" << endl;\n    else cout << "Not Prime" << endl;\n    return 0;\n}`,
+        tests: [{ input: '13', expected: 'Prime' }, { input: '1', expected: 'Not Prime' }, { input: '15', expected: 'Not Prime' }]
+      },
+      {
+        id: 'ch_divisors', src: 'lab', lec: 'Lab 07 · Exercise 4b', title: 'Count Divisors of N', diff: 'Lab Basics',
+        ar: 'اقرأ رقم n واحسب عدد الأرقام من 1 لـ n اللي n يقبل القسمة عليها بدون باقي (مثال: 12 له 6 قواسم).',
+        en: 'Read n and print the count of positive divisors of n (1..n).',
+        sampleIn: '12', sampleOut: '6',
+        hint: 'حلقة for من 1 لـ n، ولو n % i == 0 زوّد counter++.',
+        starter: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int n, counter = 0;\n    cin >> n;\n    // Count divisors of n\n    \n    cout << counter << endl;\n    return 0;\n}`,
+        solution: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int n, counter = 0;\n    cin >> n;\n    for (int i = 1; i <= n; i++) {\n        if (n % i == 0) counter++;\n    }\n    cout << counter << endl;\n    return 0;\n}`,
+        tests: [{ input: '12', expected: '6' }, { input: '5', expected: '2' }, { input: '1', expected: '1' }]
+      },
+      {
+        id: 'ch_weather', src: 'lab', lec: 'Lab 05 · Exercise 5', title: 'Weather & Freezing Check', diff: 'Lab Basics',
+        ar: 'اقرأ درجة الحرارة temp. لو بين 20 و 30 (شامل) أو تساوي 0 بالظبط اطبع "Pleasant" وإلا اطبع "Extreme".',
+        en: 'If temp is between 20 and 30 inclusive OR equals 0, print "Pleasant", else print "Extreme".',
+        sampleIn: '0', sampleOut: 'Pleasant',
+        hint: 'استخدم: if ((temp >= 20 && temp <= 30) || temp == 0)',
+        starter: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int temp;\n    cin >> temp;\n    // Check ((temp >= 20 && temp <= 30) || temp == 0)\n    \n    return 0;\n}`,
+        solution: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int temp;\n    cin >> temp;\n    if ((temp >= 20 && temp <= 30) || temp == 0) cout << "Pleasant" << endl;\n    else cout << "Extreme" << endl;\n    return 0;\n}`,
+        tests: [{ input: '0', expected: 'Pleasant' }, { input: '25', expected: 'Pleasant' }, { input: '31', expected: 'Extreme' }]
+      },
+      // --- LECTURES & MIDTERM CHALLENGES ---
+      {
+        id: 'ch_midterm_grades', src: 'lec', lec: 'Fall 2026 Midterm · Q4(4)', title: 'Sentinel -1 Grades Analyzer', diff: 'Exam Boss',
+        ar: 'سؤال الميدترم الفعلي! اقرأ درجات الطلاب لحد ما يدخل -1 (درجة النجاح 50)، واطبع عدد الناجحين والراسبين وأعلى درجة.',
+        en: 'Official Midterm Q4(4): Read grades until -1. Pass mark is 50. Print Passed, Failed, and Highest.',
+        sampleIn: '75 40 90 30 -1', sampleOut: 'Passed: 2\nFailed: 2\nHighest: 90',
+        hint: 'اقرأ أول grade قبل while (grade != -1)، حدث passed/failed و highest، وفي آخر الـ while اقرأ cin >> grade تاني!',
+        starter: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int grade, passed = 0, failed = 0, highest = 0;\n    cin >> grade;\n    // Complete the sentinel while loop\n    \n    cout << "Passed: " << passed << endl;\n    cout << "Failed: " << failed << endl;\n    cout << "Highest: " << highest << endl;\n    return 0;\n}`,
+        solution: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int grade, passed = 0, failed = 0, highest = 0;\n    cin >> grade;\n    while (grade != -1) {\n        if (grade >= 50) passed++;\n        else failed++;\n        if (grade > highest) highest = grade;\n        cin >> grade;\n    }\n    cout << "Passed: " << passed << endl;\n    cout << "Failed: " << failed << endl;\n    cout << "Highest: " << highest << endl;\n    return 0;\n}`,
+        tests: [{ input: '75 40 90 30 -1', expected: 'Passed: 2\nFailed: 2\nHighest: 90' }, { input: '100 50 49 -1', expected: 'Passed: 2\nFailed: 1\nHighest: 100' }]
+      },
+      {
+        id: 'ch_triangle', src: 'lec', lec: 'Lecture 08 · Patterns', title: 'Number Triangle Pattern', diff: 'Core',
+        ar: 'اقرأ n واطبع مثلث أرقام من 1 لـ n بحيث كل سطر i يطبع 1..i.',
+        en: 'Read n and print right-angled number triangle 1..i on row i.',
+        sampleIn: '4', sampleOut: '1\n1 2\n1 2 3\n1 2 3 4',
+        hint: 'for (int i=1; i<=n; i++) وجواها for (int j=1; j<=i; j++).',
+        starter: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    // Nested loop pattern\n    \n    return 0;\n}`,
+        solution: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    for (int i = 1; i <= n; i++) {\n        for (int j = 1; j <= i; j++) {\n            cout << j;\n            if (j < i) cout << " ";\n        }\n        cout << endl;\n    }\n    return 0;\n}`,
+        tests: [{ input: '4', expected: '1\n1 2\n1 2 3\n1 2 3 4' }, { input: '3', expected: '1\n1 2\n1 2 3' }]
+      },
+      {
+        id: 'ch_hollow', src: 'lec', lec: 'Lecture 08 · Draw Patterns', title: 'Hollow Square Pattern', diff: 'Exam Boss',
+        ar: 'اقرأ n واطبع مربع مفرّغ من النجوم (*) بحجم n × n.',
+        en: 'Print an n×n hollow square of stars (*) using border checks.',
+        sampleIn: '4', sampleOut: '****\n*  *\n*  *\n****',
+        hint: 'if (i == 1 || i == n || j == 1 || j == n) cout << "*"; else cout << " ";',
+        starter: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    // Hollow square\n    \n    return 0;\n}`,
+        solution: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    for (int i = 1; i <= n; i++) {\n        for (int j = 1; j <= n; j++) {\n            if (i == 1 || i == n || j == 1 || j == n) cout << "*";\n            else cout << " ";\n        }\n        cout << endl;\n    }\n    return 0;\n}`,
+        tests: [{ input: '4', expected: '****\n*  *\n*  *\n****' }, { input: '3', expected: '***\n* *\n***' }]
+      },
+      {
+        id: 'ch_sports', src: 'lec', lec: 'Lecture 06 · for Loop', title: 'Elite Sports Team (3 & 4)', diff: 'Core',
+        ar: 'اقرأ n واطبع الأرقام من 1 لـ n اللي تقبل القسمة على 3 و 4 معاً.',
+        en: 'Print all numbers from 1 to n divisible by BOTH 3 and 4.',
+        sampleIn: '40', sampleOut: '12\n24\n36',
+        hint: 'if (i % 3 == 0 && i % 4 == 0)',
+        starter: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    // Divisible by 3 and 4\n    \n    return 0;\n}`,
+        solution: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    for (int i = 1; i <= n; i++) {\n        if (i % 3 == 0 && i % 4 == 0) cout << i << endl;\n    }\n    return 0;\n}`,
+        tests: [{ input: '40', expected: '12\n24\n36' }, { input: '25', expected: '12\n24' }]
+      },
+      {
+        id: 'ch_marathon', src: 'lec', lec: 'Lecture 06 · Step Update', title: 'Marathon Water Stations', diff: 'Core',
+        ar: 'اقرأ distance واطبع محطات المياه كل 5 كم من 0 ثم Total: <count>.',
+        en: 'Print marks every 5 km from 0 to distance, then "Total: <count>".',
+        sampleIn: '20', sampleOut: '0\n5\n10\n15\n20\nTotal: 5',
+        hint: 'for (int km = 0; km <= distance; km += 5)',
+        starter: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int distance, count = 0;\n    cin >> distance;\n    // Step by 5\n    \n    return 0;\n}`,
+        solution: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int distance, count = 0;\n    cin >> distance;\n    for (int km = 0; km <= distance; km += 5) {\n        cout << km << endl;\n        count++;\n    }\n    cout << "Total: " << count << endl;\n    return 0;\n}`,
+        tests: [{ input: '20', expected: '0\n5\n10\n15\n20\nTotal: 5' }, { input: '10', expected: '0\n5\n10\nTotal: 3' }]
+      },
+      {
+        id: 'ch_repair', src: 'lec', lec: 'Lecture 04 · Ternary ? :', title: "Mark's Repair Charges", diff: 'Basics',
+        ar: 'اقرأ hours. السعر 50$/ساعة بحد أدنى 5 ساعات. اطبع التكلفة.',
+        en: 'Rate $50/hr with 5-hour minimum. Print total charge.',
+        sampleIn: '3', sampleOut: '250',
+        hint: 'hours = (hours < 5) ? 5 : hours;',
+        starter: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int hours;\n    cin >> hours;\n    // Minimum 5 hours\n    \n    return 0;\n}`,
+        solution: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int hours;\n    cin >> hours;\n    hours = (hours < 5) ? 5 : hours;\n    cout << hours * 50 << endl;\n    return 0;\n}`,
+        tests: [{ input: '3', expected: '250' }, { input: '8', expected: '400' }]
+      },
+      {
+        id: 'ch_largest', src: 'lec', lec: 'Lecture 02 & Lab 02', title: 'Largest of 3 Numbers', diff: 'Basics',
+        ar: 'اقرأ 3 أرقام صحيحة a, b, c واطبع الأكبر بينهم.',
+        en: 'Read a, b, c and print the largest number.',
+        sampleIn: '12 45 27', sampleOut: '45',
+        hint: 'if (a >= b && a >= c)',
+        starter: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int a, b, c;\n    cin >> a >> b >> c;\n    // Print largest\n    \n    return 0;\n}`,
+        solution: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int a, b, c;\n    cin >> a >> b >> c;\n    if (a >= b && a >= c) cout << a << endl;\n    else if (b >= a && b >= c) cout << b << endl;\n    else cout << c << endl;\n    return 0;\n}`,
+        tests: [{ input: '12 45 27', expected: '45' }, { input: '-5 -2 -10', expected: '-2' }]
+      },
+      // --- LECTURE 09: FUNCTIONS PART 1 ---
+      {
+        id: 'ch_fn_even_odd', src: 'lec', lec: 'Lecture 09 · Slide 17', title: 'evenOrOdd Function', diff: 'Functions',
+        ar: 'عرّف دالة void evenOrOdd(int num) تطبع "Even" لو الرقم زوجي و "Odd" لو فردي، مع Prototype فوق main، واستدعها من main بالقيمة المقروءة.',
+        en: 'Define void evenOrOdd(int num) printing "Even" or "Odd", with a prototype above main. Read val in main and call evenOrOdd(val).',
+        sampleIn: '7', sampleOut: 'Odd',
+        hint: 'الـ Prototype: void evenOrOdd(int); فوق main، والتعريف الكامل بعد main. جوه الدالة: if (num % 2 == 0).',
+        starter: `#include <iostream>\nusing namespace std;\n\nvoid evenOrOdd(int);\n\nint main() {\n    int val;\n    cin >> val;\n    evenOrOdd(val);\n    return 0;\n}\n\nvoid evenOrOdd(int num) {\n    // Print "Even" or "Odd"\n    \n}`,
+        solution: `#include <iostream>\nusing namespace std;\n\nvoid evenOrOdd(int);\n\nint main() {\n    int val;\n    cin >> val;\n    evenOrOdd(val);\n    return 0;\n}\n\nvoid evenOrOdd(int num) {\n    if (num % 2 == 0) cout << "Even" << endl;\n    else cout << "Odd" << endl;\n}`,
+        tests: [{ input: '7', expected: 'Odd' }, { input: '10', expected: 'Even' }, { input: '0', expected: 'Even' }]
+      },
+      {
+        id: 'ch_fn_average', src: 'lec', lec: 'Lecture 09 · Slide 5', title: 'average(a, b) Returns a Value', diff: 'Functions',
+        ar: 'عرّف دالة double average(int a, int b) ترجع (a + b) / 2.0، واطبع الناتج من main. لاحظ: الدالة بترجع قيمة (Return Type مش void).',
+        en: 'Define double average(int a, int b) returning (a + b) / 2.0. Read a and b in main and print average(a, b).',
+        sampleIn: '3 4', sampleOut: '3.5',
+        hint: 'اقسم على 2.0 (مش 2) عشان الناتج double، واطبع الناتج بـ cout << average(a, b).',
+        starter: `#include <iostream>\nusing namespace std;\n\ndouble average(int a, int b);\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    // Print average(a, b)\n    \n    return 0;\n}\n\ndouble average(int a, int b) {\n    // Return the average\n    \n}`,
+        solution: `#include <iostream>\nusing namespace std;\n\ndouble average(int a, int b);\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << average(a, b) << endl;\n    return 0;\n}\n\ndouble average(int a, int b) {\n    return (a + b) / 2.0;\n}`,
+        tests: [{ input: '3 4', expected: '3.5' }, { input: '2 2', expected: '2' }, { input: '10 15', expected: '12.5' }]
+      },
+      {
+        id: 'ch_fn_isprime', src: 'lec', lec: 'Lecture 09 · Functions + Flag', title: 'isPrime as a Function', diff: 'Functions Boss',
+        ar: 'حوّل فحص العدد الأولي لدالة: عرّف bool isPrime(int n) ترجع true أو false، واستخدمها في main لطباعة "Prime" أو "Not Prime".',
+        en: 'Refactor the prime check into bool isPrime(int n). Read n in main, call isPrime(n), print "Prime" or "Not Prime".',
+        sampleIn: '13', sampleOut: 'Prime',
+        hint: 'جوه الدالة: لو n < 2 رجّع false فورًا. حلقة for من 2 لـ n-1: لو n % i == 0 رجّع false. في الآخر return true.',
+        starter: `#include <iostream>\nusing namespace std;\n\nbool isPrime(int n);\n\nint main() {\n    int n;\n    cin >> n;\n    if (isPrime(n)) cout << "Prime" << endl;\n    else cout << "Not Prime" << endl;\n    return 0;\n}\n\nbool isPrime(int n) {\n    // Return false if n < 2 or any i in 2..n-1 divides n\n    \n}`,
+        solution: `#include <iostream>\nusing namespace std;\n\nbool isPrime(int n);\n\nint main() {\n    int n;\n    cin >> n;\n    if (isPrime(n)) cout << "Prime" << endl;\n    else cout << "Not Prime" << endl;\n    return 0;\n}\n\nbool isPrime(int n) {\n    if (n < 2) return false;\n    for (int i = 2; i < n; i++) {\n        if (n % i == 0) return false;\n    }\n    return true;\n}`,
+        tests: [{ input: '13', expected: 'Prime' }, { input: '1', expected: 'Not Prime' }, { input: '15', expected: 'Not Prime' }, { input: '2', expected: 'Prime' }]
+      }
+    ];
+
+    // --- OFFICIAL MIDTERM Q3 BUG HUNTER CASES ---
+    const BUG_HUNTER_CASES = {
+      q3a: {
+        objective: 'Objective: Print "Positive even" if n > 0 and even; "Not positive" if n <= 0; nothing if positive & odd. Find 2 Logic Errors!',
+        lines: [
+          'int n;',
+          'cout << "Enter an integer: ";',
+          'cin >> n;',
+          'if (n >= 0)',
+          '    if (n % 2 == 0)',
+          '        cout << "Positive even" << endl;',
+          'else',
+          '    cout << "Not positive" << endl;'
+        ],
+        bugs: {
+          3: { type: 'Logic Error', msg: 'Line 4: (n >= 0) غلط لأن الصفر مش موجب! لازم تكون if (n > 0).' },
+          6: { type: 'Logic Error', msg: 'Line 7: Dangling else! الـ else لازقة في أقرب if (بتاعة % 2 == 0) فهتطبع Not positive للأرقام الفردية الموجبة! الحل نحط { } حول الـ if الخارجية.' }
+        },
+        fixed: `if (n > 0) {\n    if (n % 2 == 0)\n        cout << "Positive even" << endl;\n} else {\n    cout << "Not positive" << endl;\n}`
+      },
+      q3b: {
+        objective: 'Objective: Keep asking until positive n is entered, then compute sum 1+2+...+n. Find 1 Syntax Error + 4 Logic Errors (across 3 buggy lines)!',
+        lines: [
+          'int n, i = 1, sum;',
+          'do {',
+          '    cout << "Enter a positive integer: ";',
+          '    cin >> n;',
+          '} while (n > 0)',
+          'while (i < n);',
+          '{',
+          '    sum = sum + i;',
+          '    i++;',
+          '}',
+          'cout << "Sum = " << sum << endl;'
+        ],
+        bugs: {
+          0: { type: 'Logic Error', msg: 'Line 1: المتغير sum غير مهيأ (uninitialized) وفيه Garbage Value! لازم sum = 0.' },
+          4: { type: 'Syntax + Logic Error', msg: 'Line 5: خطأين! (1) Syntax: ناقص فاصلة منقوطة ; بعد while. (2) Logic: الشرط n > 0 معكوس — لازم while (n <= 0); عشان يعيد لو الرقم سالب أو صفر.' },
+          5: { type: '2 Logic Errors', msg: 'Line 6: خطأين! (1) الفاصلة المنقوطة ; بعد while بتنهي الحلقة فاضية. (2) الشرط i < n بيستبعد n من المجموع — لازم while (i <= n).' }
+        },
+        fixed: `int n, i = 1, sum = 0;\ndo {\n    cout << "Enter a positive integer: ";\n    cin >> n;\n} while (n <= 0);\nwhile (i <= n) {\n    sum = sum + i;\n    i++;\n}\ncout << "Sum = " << sum << endl;`
+      }
+    };
+
+    // --- 19 REAL EXAM QUESTIONS (OFFICIAL MIDTERM + LABS 4-8 + LEC 9) ---
+    const EXAM_QUESTIONS = [
+      { topic: 'Midterm Q2(1) · Scope', prompt: 'Exact output of Midterm Q2(1)?', code: 'int x = 5;\nif (x > 2) {\n    int x = 10;\n    x++;\n    cout << x << " ";\n}\ncout << x;', options: ['11 11', '11 5', '10 5', '6 5'], answer: 1, exp: 'x الداخلية (10) بتزيد لـ 11 وتنطبع، وبعد قفلة البلوك ترجع x الخارجية = 5. الناتج: 11 5.' },
+      { topic: 'Midterm Q2(2) · switch', prompt: 'Exact output of Midterm Q2(2)?', code: 'int m = 2;\nswitch (m) {\n    case 1: cout << "A";\n    case 2: cout << "B";\n    case 3: cout << "C"; break;\n    case 4: cout << "D";\n    default: cout << "E";\n}', options: ['B', 'BC', 'BCDE', 'ABC'], answer: 1, exp: 'm=2 تدخل case 2 وتطبع B، مفيش break فتنزل case 3 وتطبع C ثم break فتخرج. الناتج: BC.' },
+      { topic: 'Midterm Q2(3) · while(true)', prompt: 'Exact output of Midterm Q2(3)?', code: 'int total = 0, n = 1;\nwhile (true) {\n    total += n;\n    if (total > 2) break;\n    n++;\n}\ncout << n << " " << total;', options: ['2 3', '3 3', '3 6', '2 2'], answer: 0, exp: 'لفة 1: total=1 (مش >2) → n=2. لفة 2: total=3 (>2!) → break قبل ما n تزيد! الناتج: 2 3.' },
+      { topic: 'Lab 08 Ex 4 · Nested while', prompt: 'Value of sum after the 2nd iteration of the outer loop? (Lab 8 Slide 7)', code: 'int i = 1, sum = 0;\nwhile (i <= 5) {\n    int j = 2;\n    while (j <= 5) { sum += j; j++; }\n    i += 2;\n}', options: ['14', '28', '42', '20'], answer: 1, exp: 'في كل لفة خارجية، الحلقة الداخلية بتجمع 2+3+4+5 = 14. بعد لفتين (i=1 و i=3): sum = 14 + 14 = 28.' },
+      { topic: 'Lab 08 Ex 6 · Loop Count', prompt: 'How many times does (k += 4) execute? (Lab 8 Slide 11)', code: 'int i = 0, k;\nwhile (i < 30) {\n    if (i == 18) break;\n    k = 4;\n    while (k <= 20) { k += 4; }\n    i += 6;\n}', options: ['10 times', '15 times', '20 times', '25 times'], answer: 1, exp: 'الحلقة الخارجية بتلف 3 مرات (i = 0, 6, 12) وعند i=18 بتعمل break. في كل مرة k بتلف 5 مرات (4,8,12,16,20) → 3 × 5 = 15.' },
+      { topic: 'Lab 04 · Operator Arena', prompt: 'What is the output of (8 + 6 * 3 - 2 / 2)? (Lab 4 Slide 26)', code: 'cout << 8 + 6 * 3 - 2 / 2;', options: ['20', '25', '21', '14'], answer: 1, exp: 'الأولوية لـ * و /: 6*3=18 و 2/2=1، وبعدين 8 + 18 - 1 = 25.' },
+      { topic: 'Lab 05 · Precedence !', prompt: 'What prints when user enters num = 3? (Lab 5 Slide 11)', code: 'int num = 3;\nif (!num < 0) cout << "Not negative";\nelse cout << "Negative";', options: ['Not negative', 'Negative', 'Compile error', 'Nothing'], answer: 1, exp: '!3 تتحول لـ false (0)، و 0 < 0 نتيجتها false! فيدخل else ويطبع Negative.' },
+      { topic: 'Lab 05 · Nested Ternary', prompt: 'What is the output? (Lab 5 Slide 38)', code: 'int num = -3;\nchar res = (num == 0) ? \'0\' : ((num > 0) ? \'+\' : \'-\');\ncout << res;', options: ['0', '+', '-', 'Error'], answer: 2, exp: 'num == 0 خطأ، فينتقل للجزء التاني: num > 0 خطأ أيضاً، فيرجع \'-\'.' },
+      { topic: 'Lab 05 · Missing Braces', prompt: 'What happens when compiling this code? (Lab 5 Slide 13)', code: 'if (x > 0)\n    cout << "pos";\n    cout << "done";\nelse\n    cout << "neg";', options: ['Prints "done"', 'Prints "neg"', 'Compile error: else without previous if', 'Prints nothing'], answer: 2, exp: 'من غير { }، أول سطر بس تابع لـ if، فالسطر التاني فصل الـ else عن الـ if وده بيعمل Compilation Error.' },
+      { topic: 'Lec 04 · = vs == Trap', prompt: 'What prints?', code: 'int x = 5;\nif (x = 3) cout << "Yes " << x;\nelse cout << "No";', options: ['No', 'Yes 3', 'Yes 5', 'Error'], answer: 1, exp: '= الواحدة بتعمل Assignment لـ 3 (غير صفر = true) فتطبع Yes 3.' },
+      { topic: 'Lec 04b · Range Trap', prompt: 'What prints when badGrade = -50?', code: 'int badGrade = -50;\nif (0 <= badGrade <= 100) cout << "Valid";\nelse cout << "Invalid";', options: ['Invalid', 'Valid', 'Error', 'Nothing'], answer: 1, exp: '(0 <= -50) بتبقى 0، وبعدها (0 <= 100) بتبقى true! لازم &&.' },
+      { topic: 'Lec 05 · ++ Prefix/Postfix', prompt: 'Exact output? (Lec 5 Slide 8)', code: 'int n = 1;\ncout << n++ << " " << ++n;', options: ['1 2', '2 3', '1 3', '2 2'], answer: 2, exp: 'n++ تطبع 1 وتزود n لـ 2، ثم ++n تزودها لـ 3 وتطبع 3 → 1 3 (بضمان C++17 وأحدث: الـ << بتتقيّم من الشمال لليمين).' },
+      { topic: 'Lec 06 · Extra Semicolon', prompt: 'How many times does "Hello" print?', code: 'for (int i = 1; i <= 10; i++);\n    cout << "Hello";', options: ['10', '11', '0', '1'], answer: 3, exp: 'الـ ; خلت جسم الـ for فاضي، فـ cout اتنفذت مرة واحدة فقط.' },
+      { topic: 'Lec 08 · Digital Clock', prompt: 'Total iterations of 3 nested loops (24 × 60 × 60)?', code: null, options: ['144', '3,600', '86,400', '24'], answer: 2, exp: '24 × 60 × 60 = 86,400.' },
+      { topic: 'Midterm Q1 · CPU Cycle', prompt: 'What are the 3 stages of the CPU instruction execution cycle?', code: null, options: ['Input - Process - Output', 'Fetch - Decode - Execute', 'Compile - Link - Run', 'Read - Store - Print'], answer: 1, exp: 'دورة تنفيذ الـ CPU هي: Fetch ثم Decode ثم Execute.' },
+      { topic: 'Lab 02 · Locker Problem', prompt: 'In Lab 2 Locker Problem (100 lockers, 100 students), which lockers stay open?', code: null, options: ['All even lockers', 'All prime lockers', 'Perfect squares (1, 4, 9, ..., 100)', 'Only locker 1 and 100'], answer: 2, exp: 'المربعات الكاملة فقط لها عدد فردي من القواسم فتظل مفتوحة (10 خزائن).' },
+      { topic: 'Lec 09 · Pass by Value', prompt: 'Exact output? (Lec 9 · Check Yourself)', code: 'void change(int a, int b) {\n    a = a + 10;\n    b = 0;\n    cout << a << " " << b << endl;\n}\nint main() {\n    int x = 4, y = 9;\n    change(x, y);\n    cout << x << " " << y << endl;\n}', options: ['14 0 then 4 9', '14 0 then 14 0', '4 9 then 14 0', '4 9 then 4 9'], answer: 0, exp: 'a و b نسخ (Pass by Value): التعديل جوه الدالة مبيرجعش لـ x و y. الدالة تطبع 14 0 وبعد الرجوع main يطبع 4 9.' },
+      { topic: 'Lec 09 · Prototypes', prompt: 'main calls greet() but greet is defined AFTER main with no prototype. What happens?', code: 'int main() {\n    greet();\n    return 0;\n}\nvoid greet() {\n    cout << "Hello!" << endl;\n}', options: ['Prints Hello!', 'Compile error: greet was not declared in this scope', 'Runtime error', 'Nothing prints'], answer: 1, exp: 'المترجم يقرأ من فوق لتحت: عند الاستدعاء لم يرَ greet بعد. الحل: تعريف الدالة فوق main أو إضافة Prototype قبل أول استدعاء.' },
+      { topic: 'Lec 09 · Argument Conversion', prompt: 'What prints? (Lec 9 · Demotion)', code: 'void showInt(int n) {\n    cout << n << endl;\n}\nint main() {\n    showInt(3.9);\n}', options: ['3.9', '4', '3', 'Compile error'], answer: 2, exp: 'الـ 3.9 تتحول لـ int بحذف الكسر (Demotion مش تقريب): تطبع 3.' }
+    ];
+
+    const PATTERNS = {
+      triangle: { cond: 'j <= i', explain: 'مثلث الأرقام (Lec 08): كل صف i يطبع الأرقام من 1 لـ i.', code: ['for (int i = 1; i <= n; i++) {', '    for (int j = 1; j <= i; j++)', '        cout << j << " ";', '    cout << endl;', '}'], cell: (i, j) => j <= i ? { hit: true, ch: String(j), out: j + ' ' } : { hit: false, ch: '·', out: '' } },
+      revstar: { cond: 'j <= n - i + 1', explain: 'المثلث المقلوب بالنجوم (Lab 08 Exercise 2): الصف الأول فيه n نجوم وتقل نجمة كل سطر.', code: ['for (int i = n; i >= 1; i--) {', '    for (int j = 1; j <= i; j++)', '        cout << "*";', '    cout << endl;', '}'], cell: (i, j, n) => j <= (n - i + 1) ? { hit: true, ch: '*', out: '*' } : { hit: false, ch: '·', out: '' } },
+      identity: { cond: 'i == j', explain: 'مصفوفة الوحدة (Lec 08 Slide 30): 1 على القطر الرئيسي و 0 في الباقي.', code: ['for (int i = 1; i <= n; i++) {', '    for (int j = 1; j <= n; j++)', '        cout << (i == j ? "1 " : "0 ");', '    cout << endl;', '}'], cell: (i, j) => i === j ? { hit: true, ch: '1', out: '1 ' } : { hit: false, ch: '0', out: '0 ' } },
+      hollow: { cond: 'i==1 || i==n || j==1 || j==n', explain: 'المربع المفرّغ (Lec 08 Slide 32): نجوم على الحواف ومسافات في الداخل.', code: ['for (int i = 1; i <= n; i++) {', '    for (int j = 1; j <= n; j++)', '        if (i==1 || i==n || j==1 || j==n) cout << "*";', '        else cout << " ";', '    cout << endl;', '}'], cell: (i, j, n) => (i === 1 || i === n || j === 1 || j === n) ? { hit: true, ch: '*', out: '*' } : { hit: false, ch: ' ', out: ' ' } },
+      xshape: { cond: 'i == j || i + j == n + 1', explain: 'شكل X (Lec 08 Home Ex 1): القطر الرئيسي (i==j) + القطر العكسي (i+j==n+1).', code: ['for (int i = 1; i <= n; i++) {', '    for (int j = 1; j <= n; j++)', '        if (i == j || i + j == n + 1) cout << "*";', '        else cout << " ";', '    cout << endl;', '}'], cell: (i, j, n) => (i === j || i + j === n + 1) ? { hit: true, ch: '*', out: '*' } : { hit: false, ch: ' ', out: ' ' } },
+      mult: { cond: 'cout << i * j', explain: 'جدول الضرب (Lec 08 Slide 7): كل خلية تطبع i * j.', code: ['for (int i = 1; i <= n; i++) {', '    for (int j = 1; j <= n; j++)', '        cout << i * j << "\\t";', '    cout << endl;', '}'], cell: (i, j) => ({ hit: true, ch: String(i * j), out: String(i * j).padEnd(3, ' ') }) }
+    };
+
+    // =========================================================================
+    // 2. STATE & PERSISTENCE
+    // =========================================================================
+    const state = {
+      view: 'home', theme: 'dark', modFilter: 'all', activeLab: 'pattern',
+      patKey: 'triangle', patN: 5, patStep: 0, patTimer: null,
+      bhCase: 'q3a', bhFound: new Set(),
+      runStep: 0, runTimer: null,
+      trapKey: 'range', trapGrade: -50, trapTime: 36, trapLimit: 60, trapN: 5,
+      byteVal: 157,
+      lang: 'en', compilerMode: 'local', chFilter: 'all', activeChallengeId: 'ch_even_odd_digits', codeDrafts: {}, solvedIds: new Set(), mobilePane: 'problem', editorFs: 13.5,
+      examIdx: 0, examAnswers: {}, examSubmitted: false, examBestPct: null, examSeconds: 24 * 60, examTimerId: null
+    };
+
+    function loadState() {
+      try {
+        const d = JSON.parse(localStorage.getItem('cpp_studio_ultimate_v3') || '{}');
+        if (Array.isArray(d.solvedIds)) state.solvedIds = new Set(d.solvedIds);
+        if (typeof d.examBestPct === 'number') state.examBestPct = d.examBestPct;
+        if (d.theme === 'light' || d.theme === 'dark') state.theme = d.theme;
+      } catch (e) {}
+    }
+    function saveState() {
+      try {
+        localStorage.setItem('cpp_studio_ultimate_v3', JSON.stringify({
+          solvedIds: Array.from(state.solvedIds), examBestPct: state.examBestPct, theme: state.theme
+        }));
+      } catch (e) {}
+    }
+
+    // =========================================================================
+    // 3. SYNTAX HIGHLIGHT & UPGRADED C++ RUNNER (SUPPORTS INTEGER DIVISION!)
+    // =========================================================================
+    function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+    function highlightCpp(code) {
+      let html = esc(code);
+      const stash = [];
+      const put = (cls, t) => { const k = `\u0000${String.fromCharCode(0xE000 + stash.length)}\u0000`; stash.push(`<span class="${cls}">${t}</span>`); return k; };
+      html = html.replace(/\/\/[^\n]*/g, m => put('tok-cmt', m));
+      html = html.replace(/\/\*[\s\S]*?\*\//g, m => put('tok-cmt', m));
+      html = html.replace(/"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'/g, m => put('tok-str', m));
+      html = html.replace(/#\s*include\s*&lt;[^&]+&gt;/g, m => put('tok-prep', m));
+      html = html.replace(/\b(using|namespace|std|return|if|else|switch|case|default|break|continue|for|while|do|const|true|false)\b/g, '<span class="tok-kw">$1</span>');
+      html = html.replace(/\b(int|double|float|char|bool|void|long|short|unsigned|string|cin|cout|endl)\b/g, '<span class="tok-type">$1</span>');
+      html = html.replace(/\b(\d+(?:\.\d+)?)\b/g, '<span class="tok-num">$1</span>');
+      html = html.replace(/\u0000([\uE000-\uE7FF])\u0000/g, (_, ch) => stash[ch.charCodeAt(0) - 0xE000]);
+      return html + '\n';
+    }
+    function celebrateSolve() {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const colors = ['#0A84FF', '#30D158', '#FF9F0A', '#FF453A', '#BF5AF2', '#64D2FF'];
+      const wrap = document.createElement('div'); wrap.className = 'confetti-wrap';
+      for (let i = 0; i < 30; i++) {
+        const c = document.createElement('span'); c.className = 'confetti';
+        const sz = 5 + Math.random() * 7;
+        c.style.left = (50 + (Math.random() * 40 - 20)) + '%';
+        c.style.background = colors[i % colors.length];
+        c.style.width = sz + 'px'; c.style.height = (sz * (0.5 + Math.random())) + 'px';
+        c.style.setProperty('--dx', (Math.random() * 2 - 1) * 170 + 'px');
+        c.style.setProperty('--rot', (Math.random() * 720 - 360) + 'deg');
+        c.style.animationDelay = (Math.random() * 0.15) + 's';
+        c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        wrap.appendChild(c);
+      }
+      document.body.appendChild(wrap);
+      const hp = document.getElementById('hdr-progress'); if (hp) { hp.classList.remove('solve-pulse'); void hp.offsetWidth; hp.classList.add('solve-pulse'); }
+      setTimeout(() => wrap.remove(), 1700);
+    }
+
+    function showToast(msg, isErr = false) {
+      const el = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      document.getElementById('toast-dot').className = `w-2 h-2 rounded-full ${isErr ? 'bg-apple-red' : 'bg-apple-green'}`;
+      el.classList.remove('hidden'); el.classList.add('flex');
+      clearTimeout(el._t); el._t = setTimeout(() => { el.classList.add('hidden'); el.classList.remove('flex'); }, 2200);
+    }
+
+    function runCppCode(cppCode, inputStr) {
+      const t0 = performance.now();
+      try {
+        const ob = (cppCode.match(/\{/g) || []).length, cb = (cppCode.match(/\}/g) || []).length;
+        if (ob !== cb) return { ok: false, output: '', error: `Syntax Error: Mismatched braces ({=${ob}, }=${cb})`, ms: 1 };
+        // Locate int main() and brace-match its body (supports functions defined after main)
+        const m = cppCode.match(/int\s+main\s*\([^)]*\)\s*\{/);
+        if (!m) return { ok: false, output: '', error: 'Syntax Error: Missing int main() { ... }', ms: 1 };
+        let depth = 0, mainEnd = -1;
+        const bodyStart = m.index + m[0].length;
+        for (let i = bodyStart - 1; i < cppCode.length; i++) {
+          const chc = cppCode[i];
+          if (chc === '{') depth++;
+          else if (chc === '}') { depth--; if (depth === 0) { mainEnd = i; break; } }
+        }
+        if (mainEnd === -1) return { ok: false, output: '', error: 'Syntax Error: Mismatched braces', ms: 1 };
+        let auxCode = (cppCode.slice(0, m.index) + '\n' + cppCode.slice(mainEnd + 1))
+          .replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '')
+          .replace(/#include[^\n]*/g, '').replace(/using\s+namespace\s+\w+\s*;/g, '');
+        // Drop prototypes, then convert C++ function signatures to JS functions
+        auxCode = auxCode.replace(/\b(?:void|int|double|float|char|bool|string|unsigned|short|long(?:\s+long)?)\s+[a-zA-Z_]\w*\s*\([^)]*\)\s*;/g, '');
+        auxCode = auxCode.replace(/\b(?:void|int|double|float|char|bool|string|unsigned|short|long(?:\s+long)?)\s+([a-zA-Z_]\w*)\s*\(([^)]*)\)\s*\{/g,
+          (_, fnm, ps) => `function ${fnm}(${ps.split(',').map(p => p.trim().split(/\s+/).pop()).filter(Boolean).join(', ')}) {`);
+        let body = cppCode.slice(bodyStart, mainEnd).replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');
+
+        // Track integer variable names so n /= 10 and n = n / 10 perform C++ integer truncation!
+        const intVars = new Set();
+        const intDeclRe = /\b(?:unsigned\s+)?(?:long\s+long|long|short|int)\s+([^;]+);/g;
+        let dm;
+        while ((dm = intDeclRe.exec(auxCode + '\n' + body)) !== null) {
+          dm[1].split(',').forEach(part => {
+            const nm = part.trim().match(/^([a-zA-Z_]\w*)/);
+            if (nm) intVars.add(nm[1]);
+          });
+        }
+
+        body = body.replace(/\breturn\s+[^;]*;/g, 'return;');
+        body = auxCode + '\n' + body;
+        body = body.replace(/\b(?:std::)?cin\s*((?:>>\s*[a-zA-Z_]\w*\s*)+);/g, (_, chain) =>
+          '{ ' + chain.split('>>').map(v => v.trim()).filter(Boolean).map(v => `${v} = __readNext();`).join(' ') + ' }'
+        );
+        body = body.replace(/\b(?:std::)?cout\s*((?:<<[\s\S]*?)+);/g, (_, chain) => {
+          const parts = []; let cur = '', inS = false, q = '';
+          for (let i = 0; i < chain.length; i++) {
+            const c = chain[i];
+            if (inS) { cur += c; if (c === '\\' && i + 1 < chain.length) { cur += chain[++i]; continue; } if (c === q) inS = false; }
+            else if (c === '"' || c === "'") { inS = true; q = c; cur += c; }
+            else if (c === '<' && chain[i + 1] === '<') { if (cur.trim()) parts.push(cur.trim()); cur = ''; i++; }
+            else cur += c;
+          }
+          if (cur.trim()) parts.push(cur.trim());
+          return '{ ' + parts.map(p => (p === 'endl' || p === 'std::endl') ? '__out += "\\n";' : `__out += String(${p});`).join(' ') + ' }';
+        });
+
+        // Apply C++ integer division truncation for int variables (e.g., n /= 10; n = n / 10;)
+        intVars.forEach(v => {
+          body = body.replace(new RegExp(`\\b${v}\\s*\\/=\\s*([^;]+);`, 'g'), `${v} = Math.trunc(${v} / ($1));`);
+          body = body.replace(new RegExp(`\\b${v}\\s*=\\s*([^;=]+\\/[^;]+);`, 'g'), `${v} = Math.trunc($1);`);
+        });
+
+        body = body.replace(/\bconst\s+(?:unsigned\s+)?(?:long\s+long|long|short|int|double|float|char|bool|string)\s+/g, 'const ');
+        body = body.replace(/\b(?:unsigned\s+)?(?:long\s+long|long|short|int|double|float|char|bool|string)\s+/g, 'let ');
+        body = body.replace(/static_cast\s*<\s*(?:int|float|double)\s*>\s*\(([^)]+)\)/g, '($1)');
+        body = body.replace(/\b(for|while)\s*(\([^)]*\))\s*\{/g, '$1 $2 { if (++__steps > 120000) throw new Error("Infinite Loop Detected");');
+        body = body.replace(/\bdo\s*\{/g, 'do { if (++__steps > 120000) throw new Error("Infinite Loop Detected");');
+
+        const toks = (inputStr || '').trim() ? (inputStr || '').trim().split(/\s+/) : [];
+        let ti = 0;
+        const __readNext = () => { if (ti >= toks.length) return 0; const r = toks[ti++]; const n = Number(r); return Number.isNaN(n) ? r : n; };
+        const fn = new Function('__readNext', `let __out="", __steps=0; (function(){ ${body} })(); return __out;`);
+        const out = fn(__readNext);
+        return { ok: true, output: out, error: null, ms: Math.max(1, Math.round(performance.now() - t0)) };
+      } catch (e) {
+        return { ok: false, output: '', error: `Error: ${e.message}`, ms: Math.max(1, Math.round(performance.now() - t0)) };
+      }
+    }
+    function norm(s) { return (s || '').replace(/\r\n/g, '\n').split('\n').map(l => l.trimEnd()).join('\n').trim(); }
+
+    const I18N = {
+      en: { nav_home: 'Home', nav_labs: 'Interactive Labs', nav_ide: 'IDE (17)', nav_exam: 'Midterm Sim', btn_explain: 'Explain', btn_solution: 'Solution', langBtn: 'عربي' },
+      ar: { nav_home: 'الرئيسية', nav_labs: 'المختبرات التفاعلية', nav_ide: 'محرر الكود (17)', nav_exam: 'محاكي الميدترم', btn_explain: 'شرح الحل', btn_solution: 'الحل النموذجي', langBtn: 'EN' }
+    };
+    function applyLang() {
+      const dict = I18N[state.lang] || I18N.en;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const k = el.dataset.i18n;
+        if (dict[k]) el.textContent = dict[k];
+      });
+      document.getElementById('lang-toggle').textContent = dict.langBtn;
+    }
+
+    const SOLUTION_EXPLANATIONS = {
+      ch_even_odd_digits: '1) نهيّئ evenSum = 0 و oddSum = 0 قبل الحلقة. 2) طالما n != 0 نأخذ آخر خانة بـ (n % 10). 3) لو الخانة زوجية نجمعها على evenSum وإلا على oddSum. 4) نحذف آخر خانة بالقسمة الصحيحة n /= 10.',
+      ch_digits: 'كل قسمة صحيحة على 10 (n = n / 10) بتشيل خانة واحدة من اليمين؛ نكرر داخل while (n != 0) ونزوّد count++ في كل لفة.',
+      ch_primes_n: 'حلقتان متداخلتان: الخارجية تمشي على كل رقم i من 2 لـ n، والداخلية تعدّ قواسم i من 1 لـ i. الرقم يكون أولي بالظبط لو عدد قواسمه == 2.',
+      ch_fact_n: 'الحلقة الخارجية تختار الرقم i من 0 لـ n، وجواها نبدأ fact = 1 (عشان 0! = 1) ونضرب j من 1 لـ i.',
+      ch_prime: 'نفترض إن الرقم أولي بـ bool isPrime = true. لو لقينا أي رقم j بين 2 و n-1 يقسم n بدون باقي نقلب العلم لـ false، وبعد الحلقة نتأكد إن n > 1.',
+      ch_divisors: 'نمشي بـ for من 1 لـ n، وكل رقم i يحقق n % i == 0 نزوّد counter++.',
+      ch_weather: 'نجمع شرط النطاق (temp >= 20 && temp <= 30) مع شرط الصفر (temp == 0) باستخدام المعامل ||.',
+      ch_midterm_grades: 'نمط Sentinel Loop: نقرأ أول درجة قبل while (grade != -1)، نحسب الناجح/الراسب وأعلى درجة، وفي آخر جسم الحلقة نقرأ الدرجة التالية بـ cin >> grade.',
+      ch_triangle: 'الحلقة الخارجية i للصفوف (1..n)، والداخلية j تطبع من 1 لحد رقم الصف الحالي i، ثم endl للسطر الجديد.',
+      ch_hollow: 'نطبع "*" فقط عند الحواف الأربعة: أول صف (i==1)، آخر صف (i==n)، أول عمود (j==1)، أو آخر عمود (j==n)، وباقي الخلايا مسافة.',
+      ch_sports: 'نمر من 1 لـ n ونختبر شرط القسمة المزدوج باستخدام &&: (i % 3 == 0 && i % 4 == 0).',
+      ch_marathon: 'نبدأ من km = 0 ونزيد كل لفة بـ km += 5 لحد distance، ونعدّ عدد المحطات في count.',
+      ch_repair: 'نطبّق الحد الأدنى بـ المعامل الثلاثي: hours = (hours < 5) ? 5 : hours ثم نضرب في 50.',
+      ch_largest: 'نقارن a مع b و c باستخدام &&، ثم else if لـ b، وإلا يكون c هو الأكبر.',
+      ch_fn_even_odd: 'الـ Prototype فوق main يخبر المترجم باسم الدالة ونوعها قبل الاستدعاء. التعريف بعد main يستقبل num (نسخة من val) ويختبر num % 2 == 0.',
+      ch_fn_average: 'الدالة ذات Return Type غير void لازم ترجع قيمة بـ return. نقسم على 2.0 (double) حتى لا تضيع الكسور بالقسمة الصحيحة.',
+      ch_fn_isprime: 'نفس منطق العلم (Flag) لكن بالإرجاع المباشر: أي قاسم يجد n % i == 0 نرجع false فورًا، ولو انتهت الحلقة نرجع true. لاحظ معالجة n < 2 أولاً.'
+    };
+
+    async function runJudge0Cpp(cppCode, inputStr) {
+      const t0 = performance.now();
+      try {
+        const createRes = await fetch('https://ce.judge0.com/submissions/?base64_encoded=false', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ language_id: 54, source_code: cppCode, stdin: inputStr || '' })
+        });
+        if (!createRes.ok) throw new Error('Judge0 HTTP ' + createRes.status);
+        const { token } = await createRes.json();
+        if (!token) throw new Error('No submission token');
+        for (let tries = 0; tries < 15; tries++) {
+          await new Promise(r => setTimeout(r, 450));
+          const poll = await fetch(`https://ce.judge0.com/submissions/${token}?base64_encoded=false&fields=stdout,stderr,compile_output,status,time`);
+          if (!poll.ok) throw new Error('Poll HTTP ' + poll.status);
+          const data = await poll.json();
+          if (data.status && data.status.id >= 3) {
+            const ms = data.time ? Math.round(Number(data.time) * 1000) : Math.round(performance.now() - t0);
+            if (data.compile_output) return { ok: false, output: '', error: `g++ Compile Error:\n${data.compile_output}`, ms, engine: 'g++' };
+            if (data.stderr) return { ok: false, output: data.stdout || '', error: `g++ Runtime Error:\n${data.stderr}`, ms, engine: 'g++' };
+            return { ok: true, output: data.stdout || '', error: null, ms: Math.max(1, ms), engine: 'g++' };
+          }
+        }
+        throw new Error('Judge0 timeout');
+      } catch (err) {
+        const fb = runCppCode(cppCode, inputStr);
+        fb.fallbackNote = `Judge0 unavailable (${err.message}) — ran on Local Engine`;
+        return fb;
+      }
+    }
+
+    // =========================================================================
+    // 4. NAVIGATION, THEME & HOME
+    // =========================================================================
+    function applyTheme() {
+      document.documentElement.classList.toggle('dark', state.theme === 'dark');
+      document.getElementById('theme-icon').setAttribute('data-lucide', state.theme === 'dark' ? 'sun' : 'moon');
+      lucide.createIcons();
+    }
+    function switchView(v) {
+      state.view = v;
+      document.querySelectorAll('.view-section').forEach(s => s.classList.toggle('hidden', s.id !== `view-${v}`));
+      document.querySelectorAll('.nav-btn').forEach(b => {
+        const on = b.dataset.nav === v;
+        b.className = `nav-btn px-3 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 whitespace-nowrap ${
+          on ? 'bg-apple-blue text-white shadow-sm' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+        }`;
+      });
+      if (v !== 'labs') { stopPatAnim(); stopRunnersAnim(); }
+      if (v === 'exam' && !state.examTimerId && !state.examSubmitted) startExamTimer();
+      updateStats();
+    }
+    function updateStats() {
+      const s = state.solvedIds.size, t = CHALLENGES.length;
+      document.getElementById('hdr-progress').textContent = `${s}/${t} Solved`;
+      const pct = Math.min(100, Math.round((s / t) * 60 + (state.examBestPct !== null ? state.examBestPct * 0.4 : 10)));
+      document.getElementById('home-readiness-pct').textContent = `${pct}%`;
+      document.getElementById('home-ring').setAttribute('stroke-dashoffset', String(163.36 - (163.36 * pct) / 100));
+      if (state.examBestPct !== null) {
+        const badge = document.getElementById('home-best-grade');
+        badge.textContent = `Midterm: ${state.examBestPct}% (${euiGrade(state.examBestPct)})`;
+        badge.className = 'text-xs font-semibold px-2 py-0.5 rounded-full bg-apple-green/15 text-apple-green';
+      }
+    }
+    function renderHomeModules() {
+      const grid = document.getElementById('curriculum-grid');
+      const items = state.modFilter === 'all' ? MODULES : MODULES.filter(m => m.cat === state.modFilter);
+      grid.innerHTML = items.map(m => {
+        const done = m.ch && state.solvedIds.has(m.ch);
+        return `
+          <div class="bento-card bento-hover rounded-2xl p-4 flex flex-col justify-between gap-3">
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold text-apple-blue">${m.tag}</span>
+                ${done ? '<span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-apple-green/15 text-apple-green">Done ✓</span>'
+                       : '<span class="text-[10px] font-medium px-2 py-0.5 rounded-full elevated text-[var(--text-secondary)]">Ready</span>'}
+              </div>
+              <h3 class="font-bold text-sm">${m.title}</h3>
+              <p class="text-xs text-[var(--text-secondary)] rtl text-right leading-relaxed">${m.ar}</p>
+            </div>
+            <button data-ltype="${m.action}" data-ltarget="${m.target}" class="w-full py-2 rounded-xl elevated hover:bg-apple-blue hover:text-white hover:border-apple-blue text-xs font-semibold transition-all">
+              ${m.action === 'lab' ? 'Open Lab →' : 'Solve in IDE →'}
+            </button>
+          </div>`;
+      }).join('');
+      grid.querySelectorAll('[data-ltype]').forEach(btn => btn.addEventListener('click', () => {
+        if (btn.dataset.ltype === 'lab') { switchLab(btn.dataset.ltarget); switchView('labs'); }
+        else { state.chFilter = 'all'; document.getElementById('challenge-source-filter').value = 'all'; loadChallenge(btn.dataset.ltarget); switchView('studio'); }
+      }));
+    }
+
+    // =========================================================================
+    // 5. ALL 5 INTERACTIVE LABS
+    // =========================================================================
+    function switchLab(k) {
+      state.activeLab = k; stopPatAnim(); stopRunnersAnim();
+      document.querySelectorAll('.lab-pane').forEach(p => p.classList.toggle('hidden', p.id !== `lab-pane-${k}`));
+      document.querySelectorAll('.lab-tab-btn').forEach(b => {
+        const on = b.dataset.lab === k;
+        b.className = `lab-tab-btn px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-1.5 whitespace-nowrap transition-all ${on ? 'bg-apple-blue text-white shadow-sm' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`;
+      });
+      if (k === 'pattern') renderPatternLab();
+      if (k === 'bughunter') renderBugHunter();
+      if (k === 'runners') renderRunnersLab();
+      if (k === 'traps') renderTrapLab();
+      if (k === 'binary') renderBinaryLab();
+    }
+
+    // Lab 1: Pattern Matrix
+    function stopPatAnim() {
+      if (state.patTimer) { clearInterval(state.patTimer); state.patTimer = null; }
+      document.getElementById('pat-play-label').textContent = 'Animate';
+      document.getElementById('pat-play-icon').setAttribute('data-lucide', 'play');
+      lucide.createIcons();
+    }
+    function renderPatternLab() {
+      const pat = PATTERNS[state.patKey], n = state.patN, total = n * n;
+      if (state.patStep > total) state.patStep = total;
+      const activeIdx = state.patStep > 0 ? state.patStep - 1 : -1;
+      const curI = activeIdx >= 0 ? Math.floor(activeIdx / n) + 1 : 1, curJ = activeIdx >= 0 ? (activeIdx % n) + 1 : 1;
+      document.getElementById('pat-n-label').textContent = `n = ${n}`;
+      document.getElementById('pat-iter-badge').textContent = state.patStep === 0 ? `Ready (n=${n})` : `i=${curI}, j=${curJ}`;
+      document.getElementById('pat-cond-badge').textContent = pat.cond;
+      document.getElementById('pat-explain').textContent = pat.explain;
+      document.getElementById('pat-total-runs').textContent = `${state.patStep} / ${total} steps`;
+      document.getElementById('pat-code-view').innerHTML = pat.code.map((ln, idx) =>
+        `<div class="px-2 py-0.5 rounded-lg ${state.patStep > 0 && idx === 2 ? 'bg-apple-blue/20 border-l-2 border-apple-blue' : ''}">${highlightCpp(ln).trimEnd()}</div>`
+      ).join('');
+      const grid = document.getElementById('pat-matrix-grid');
+      grid.style.gridTemplateColumns = `repeat(${n}, minmax(40px, 52px))`;
+      let cells = '', out = '';
+      for (let idx = 0; idx < total; idx++) {
+        const i = Math.floor(idx / n) + 1, j = (idx % n) + 1, res = pat.cell(i, j, n);
+        const vis = idx < state.patStep || state.patStep === 0, cur = idx === activeIdx;
+        if (idx < state.patStep) { out += res.out; if (j === n) out += '\n'; }
+        let cls = 'elevated text-[var(--text-secondary)] opacity-40';
+        if (cur) cls = 'matrix-cell-active';
+        else if (vis && res.hit) cls = 'matrix-cell-star font-bold';
+        else if (vis) cls = 'elevated text-[var(--text-secondary)]';
+        cells += `<div class="matrix-cell rounded-xl border h-11 sm:h-12 flex flex-col items-center justify-center font-mono select-none ${cls}"><span class="text-sm leading-none">${vis ? esc(res.ch) : ''}</span><span class="text-[9px] opacity-65 mt-0.5">${i},${j}</span></div>`;
+      }
+      grid.innerHTML = cells;
+      document.getElementById('pat-console').textContent = state.patStep === 0 ? 'Click "Animate" or "Step" to watch the nested loop draw...' : out;
+    }
+
+    // Lab 2: Midterm Bug Hunter
+    function renderBugHunter() {
+      const c = BUG_HUNTER_CASES[state.bhCase];
+      const bugKeys = Object.keys(c.bugs).map(Number);
+      document.getElementById('bh-objective').textContent = c.objective;
+      document.getElementById('bh-found-counter').textContent = `Found: ${state.bhFound.size} / ${bugKeys.length} buggy lines`;
+
+      document.getElementById('bh-code-lines').innerHTML = c.lines.map((ln, idx) => {
+        const found = state.bhFound.has(idx);
+        return `
+          <button data-bh-line="${idx}" class="w-full text-left flex items-center gap-3 px-2.5 py-1.5 rounded-xl transition-all ${found ? 'bg-apple-red/15 border border-apple-red/40' : 'hover:bg-apple-blue/10'}">
+            <span class="w-5 text-right text-[var(--gutter-text)] select-none shrink-0">${idx + 1}</span>
+            <span class="whitespace-pre flex-1">${highlightCpp(ln).trimEnd()}</span>
+            ${found ? '<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-apple-red/20 text-apple-red shrink-0">BUG ✓</span>' : ''}
+          </button>`;
+      }).join('');
+
+      document.querySelectorAll('[data-bh-line]').forEach(btn => btn.addEventListener('click', () => {
+        const idx = Number(btn.dataset.bhLine);
+        if (c.bugs[idx]) {
+          state.bhFound.add(idx);
+          showToast(`Bug spotted on Line ${idx + 1}!`);
+          renderBugHunter();
+        } else {
+          showToast(`Line ${idx + 1} is clean — look closer!`, true);
+        }
+      }));
+
+      const logEl = document.getElementById('bh-log');
+      logEl.innerHTML = Array.from(state.bhFound).sort((a, b) => a - b).map(idx => `
+        <div class="rounded-2xl p-3 bg-apple-red/10 border border-apple-red/30 text-xs space-y-1">
+          <div class="font-bold text-apple-red">${c.bugs[idx].type}</div>
+          <div class="rtl text-right leading-relaxed">${c.bugs[idx].msg}</div>
+        </div>`).join('');
+
+      const allFound = state.bhFound.size === bugKeys.length;
+      document.getElementById('bh-fixed-box').classList.toggle('hidden', !allFound);
+      if (allFound) document.getElementById('bh-fixed-code').innerHTML = highlightCpp(c.fixed);
+    }
+
+    // Lab 3: Two Runners Arena (Lab 7 Ex 5)
+    const RUNNER_STEPS = [
+      { r1: 0, r2: 20 }, { r1: 3, r2: 18 }, { r1: 6, r2: 16 }, { r1: 9, r2: 14 }, { r1: 12, r2: 12, meet: true }
+    ];
+    function stopRunnersAnim() { if (state.runTimer) { clearInterval(state.runTimer); state.runTimer = null; } }
+    function renderRunnersLab() {
+      document.getElementById('runners-code').innerHTML = highlightCpp(`for (int r1 = 0, r2 = 20; r1 <= r2; r1 += 3, r2 -= 2) {\n    cout << "Runner 1: " << r1 << ", Runner 2: " << r2 << endl;\n    if (r1 == r2) cout << "Runners meet!";\n}`);
+      const cur = RUNNER_STEPS[state.runStep];
+      document.getElementById('r1-pos-lbl').textContent = `Runner 1 (r1): ${cur.r1}`;
+      document.getElementById('r2-pos-lbl').textContent = `Runner 2 (r2): ${cur.r2}`;
+      document.getElementById('runners-status').textContent = cur.meet ? 'Runners Meet at 12! ✓' : `Iteration ${state.runStep + 1}`;
+      document.getElementById('runners-status').className = `px-2.5 py-0.5 rounded-full text-[11px] font-bold ${cur.meet ? 'bg-apple-green/20 text-apple-green' : 'elevated'}`;
+      document.getElementById('r1-marker').style.left = `${(cur.r1 / 20) * 100}%`;
+      document.getElementById('r2-marker').style.left = `${(cur.r2 / 20) * 100}%`;
+      let out = '';
+      for (let i = 0; i <= state.runStep; i++) {
+        const s = RUNNER_STEPS[i];
+        out += `Runner 1: ${s.r1}, Runner 2: ${s.r2}\n`;
+        if (s.meet) out += 'Runners meet!\n';
+      }
+      document.getElementById('runners-console').textContent = out;
+    }
+
+    // Lab 4: Trap Dissector
+    function renderTrapLab() {
+      const stage = document.getElementById('trap-stage');
+      if (state.trapKey === 'range') {
+        const g = state.trapGrade, s1 = (0 <= g) ? 1 : 0, ok = (g >= 0 && g <= 100);
+        stage.innerHTML = `
+          <div class="flex justify-between items-center"><h3 class="text-lg font-bold">Why <span class="font-mono text-apple-red">0 &lt;= grade &lt;= 100</span> Fails</h3><span class="font-mono font-bold px-3 py-1 rounded-xl elevated">grade = ${g}</span></div>
+          <input id="trap-grade-sl" type="range" min="-50" max="150" value="${g}" class="w-full accent-[#0A84FF]" />
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 font-mono text-xs">
+            <div class="rounded-2xl p-4 bg-apple-red/10 border border-apple-red/30 space-y-2"><div class="font-bold text-apple-red">WRONG: (0 &lt;= ${g} &lt;= 100)</div><div>Step 1: (0 &lt;= ${g}) → <strong>${s1}</strong></div><div>Step 2: (${s1} &lt;= 100) → <strong class="text-apple-red">ALWAYS TRUE!</strong></div></div>
+            <div class="rounded-2xl p-4 bg-apple-green/10 border border-apple-green/30 space-y-2"><div class="font-bold text-apple-green">CORRECT: (${g} &gt;= 0 &amp;&amp; ${g} &lt;= 100)</div><div>Result: <strong class="${ok ? 'text-apple-green' : 'text-apple-orange'}">${ok ? 'VALID (true)' : 'INVALID (false)'}</strong></div></div>
+          </div>`;
+        document.getElementById('trap-grade-sl').addEventListener('input', e => { state.trapGrade = Number(e.target.value); renderTrapLab(); });
+      } else if (state.trapKey === 'notgt') {
+        const t = state.trapTime, lim = state.trapLimit, nt = t === 0 ? 1 : 0;
+        stage.innerHTML = `
+          <h3 class="text-lg font-bold">Precedence: <span class="font-mono text-apple-red">!time &gt; limit</span></h3>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="elevated rounded-2xl p-3"><div class="flex justify-between text-xs font-mono"><span>time</span><strong>${t}</strong></div><input id="trap-t-sl" type="range" min="0" max="100" value="${t}" class="w-full accent-[#0A84FF]" /></div>
+            <div class="elevated rounded-2xl p-3"><div class="flex justify-between text-xs font-mono"><span>limit</span><strong>${lim}</strong></div><input id="trap-l-sl" type="range" min="0" max="100" value="${lim}" class="w-full accent-[#0A84FF]" /></div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 font-mono text-xs">
+            <div class="rounded-2xl p-4 bg-apple-red/10 border border-apple-red/30 space-y-1.5"><div class="font-bold text-apple-red">TRAP: (!time &gt; limit)</div><div>(!${t}) → ${nt}, then (${nt} &gt; ${lim}) → <strong>${nt > lim}</strong></div></div>
+            <div class="rounded-2xl p-4 bg-apple-green/10 border border-apple-green/30 space-y-1.5"><div class="font-bold text-apple-green">FIXED: (!(time &gt; limit))</div><div>!(${t} &gt; ${lim}) → <strong>${!(t > lim)}</strong></div></div>
+          </div>`;
+        document.getElementById('trap-t-sl').addEventListener('input', e => { state.trapTime = Number(e.target.value); renderTrapLab(); });
+        document.getElementById('trap-l-sl').addEventListener('input', e => { state.trapLimit = Number(e.target.value); renderTrapLab(); });
+      } else if (state.trapKey === 'inc') {
+        const n = state.trapN;
+        stage.innerHTML = `
+          <div class="flex justify-between items-center"><h3 class="text-lg font-bold">Memory Box: ++n vs n++</h3><div class="flex items-center gap-2"><button id="inc-dec" class="w-8 h-8 rounded-xl elevated font-bold">-</button><span class="font-mono font-bold w-6 text-center">${n}</span><button id="inc-add" class="w-8 h-8 rounded-xl elevated font-bold">+</button></div></div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 font-mono text-xs">
+            <div class="rounded-2xl p-4 elevated space-y-2"><div class="font-bold text-apple-blue">Prefix: cout &lt;&lt; ++n;</div><div>Printed: <strong class="text-apple-green">${n + 1}</strong> · RAM after: <strong>${n + 1}</strong></div></div>
+            <div class="rounded-2xl p-4 elevated space-y-2"><div class="font-bold text-apple-purple">Postfix: cout &lt;&lt; n++;</div><div>Printed: <strong class="text-apple-orange">${n}</strong> · RAM after: <strong>${n + 1}</strong></div></div>
+          </div>`;
+        document.getElementById('inc-dec').addEventListener('click', () => { state.trapN--; renderTrapLab(); });
+        document.getElementById('inc-add').addEventListener('click', () => { state.trapN++; renderTrapLab(); });
+      } else {
+        stage.innerHTML = `
+          <h3 class="text-lg font-bold">Extra Semicolon Trap (Lec 06 & Midterm Q3b)</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 font-mono text-xs">
+            <div class="rounded-2xl p-4 bg-apple-red/10 border border-apple-red/30 space-y-2"><div class="font-bold text-apple-red">BUG: for (int i=1; i&lt;=5; i++);</div><div>"Hello" prints <strong>ONCE</strong> (empty loop body!).</div></div>
+            <div class="rounded-2xl p-4 bg-apple-green/10 border border-apple-green/30 space-y-2"><div class="font-bold text-apple-green">OK: for (int i=1; i&lt;=5; i++)</div><div>"Hello" prints <strong>5 times</strong>.</div></div>
+          </div>`;
+      }
+    }
+
+    // Lab 5: Binary & ASCII
+    function renderBinaryLab() {
+      const v = state.byteVal, weights = [128, 64, 32, 16, 8, 4, 2, 1], active = [];
+      const el = document.getElementById('bit-switches');
+      el.innerHTML = weights.map((w, idx) => {
+        const bit = (v & w) ? 1 : 0; if (bit) active.push(w);
+        return `<button data-bit="${w}" class="rounded-2xl p-3 border flex flex-col items-center gap-1 transition-all ${bit ? 'bit-btn-on' : 'elevated hover:border-apple-blue'}"><span class="text-[10px] opacity-75 font-mono">2^${7 - idx}</span><span class="text-xl font-extrabold font-mono">${bit}</span><span class="text-[10px] opacity-80 font-mono">${w}</span></button>`;
+      }).join('');
+      el.querySelectorAll('[data-bit]').forEach(b => b.addEventListener('click', () => { state.byteVal ^= Number(b.dataset.bit); renderBinaryLab(); }));
+      document.getElementById('bin-dec').textContent = String(v);
+      document.getElementById('bin-formula').textContent = active.length ? `${active.join(' + ')} = ${v}` : '0';
+      document.getElementById('bin-ascii').textContent = (v >= 32 && v <= 126) ? `'${String.fromCharCode(v)}'` : '—';
+      renderAsciiCompare();
+    }
+    function renderAsciiCompare() {
+      const c1 = (document.getElementById('ascii-c1').value || 'a')[0], c2 = (document.getElementById('ascii-c2').value || 'Z')[0];
+      const n1 = c1.charCodeAt(0), n2 = c2.charCodeAt(0), res = n1 > n2;
+      document.getElementById('ascii-compare-out').innerHTML = `<div>'${esc(c1)}' = <span class="text-apple-blue font-bold">${n1}</span> · '${esc(c2)}' = <span class="text-apple-blue font-bold">${n2}</span></div><div class="pt-1 border-t border-[var(--border-hairline)]">('${esc(c1)}' &gt; '${esc(c2)}') → <strong class="${res ? 'text-apple-green' : 'text-apple-red'}">${res ? 'true (1)' : 'false (0)'}</strong></div>`;
+    }
+
+    // =========================================================================
+    // 6. IDE STUDIO & EXAM SIMULATOR
+    // =========================================================================
+    function initStudioSelect() {
+      const list = state.chFilter === 'all' ? CHALLENGES : CHALLENGES.filter(c => c.src === state.chFilter);
+      const sel = document.getElementById('challenge-select');
+      sel.innerHTML = list.map(c => `<option value="${c.id}">${state.solvedIds.has(c.id) ? '✓ ' : ''}${c.title} (${c.lec.split('·')[0].trim()})</option>`).join('');
+      if (!list.some(c => c.id === state.activeChallengeId)) state.activeChallengeId = list[0].id;
+      sel.value = state.activeChallengeId;
+    }
+    function updateGutterAndHighlight() {
+      const ed = document.getElementById('code-editor'), hi = document.getElementById('code-highlight'), gut = document.getElementById('ide-gutter');
+      gut.innerHTML = Array.from({ length: ed.value.split('\n').length }, (_, i) => i + 1).join('<br />');
+      hi.innerHTML = highlightCpp(ed.value);
+      hi.scrollTop = ed.scrollTop; hi.scrollLeft = ed.scrollLeft; gut.scrollTop = ed.scrollTop;
+    }
+    function loadChallenge(id) {
+      state.activeChallengeId = id;
+      initStudioSelect();
+      const ch = CHALLENGES.find(c => c.id === state.activeChallengeId) || CHALLENGES[0];
+      document.getElementById('prob-lec').textContent = ch.lec;
+      document.getElementById('prob-title').textContent = ch.title;
+      document.getElementById('prob-ar').textContent = ch.ar;
+      document.getElementById('prob-en').textContent = ch.en;
+      document.getElementById('prob-in').textContent = ch.sampleIn;
+      document.getElementById('prob-out').textContent = ch.sampleOut;
+      document.getElementById('prob-hint-text').textContent = ch.hint;
+      document.getElementById('prob-hint-box').classList.add('hidden');
+      document.getElementById('prob-explain-box').classList.add('hidden');
+      document.getElementById('prob-explain-text').textContent = SOLUTION_EXPLANATIONS[ch.id] || ch.hint;
+      document.getElementById('challenge-diff').textContent = ch.diff;
+      document.getElementById('custom-cin').value = ch.sampleIn;
+      const st = document.getElementById('prob-status');
+      st.textContent = state.solvedIds.has(ch.id) ? 'Solved ✓' : 'Unsolved';
+      st.className = state.solvedIds.has(ch.id) ? 'px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-apple-green/15 text-apple-green' : 'px-2.5 py-0.5 rounded-full text-[11px] font-semibold elevated text-[var(--text-secondary)]';
+      document.getElementById('code-editor').value = state.codeDrafts[ch.id] ?? ch.starter;
+      updateGutterAndHighlight();
+      document.getElementById('test-list').innerHTML = '';
+      document.getElementById('run-summary').textContent = '';
+      document.getElementById('run-ms').classList.add('hidden');
+      document.getElementById('console-out').textContent = 'Press Run (or Ctrl/Cmd + Enter) to test your C++ code...';
+    }
+    async function runStudio() {
+      const ch = CHALLENGES.find(c => c.id === state.activeChallengeId), code = document.getElementById('code-editor').value;
+      const runBtn = document.getElementById('btn-run-code');
+      const useJudge0 = state.compilerMode === 'judge0';
+      if (useJudge0) {
+        runBtn.disabled = true;
+        document.getElementById('console-out').textContent = 'Compiling & running on real g++ (Judge0 CE)...';
+      }
+      const execFn = useJudge0 ? runJudge0Cpp : (c, i) => Promise.resolve(runCppCode(c, i));
+      const customRes = await execFn(code, document.getElementById('custom-cin').value);
+      if (customRes.fallbackNote) showToast(customRes.fallbackNote, true);
+      const outEl = document.getElementById('console-out');
+      outEl.textContent = customRes.ok ? (customRes.output || '(no output)') : customRes.error;
+      outEl.className = `rounded-2xl p-3.5 bg-[var(--code-bg)] border border-[var(--border-hairline)] font-mono text-xs min-h-[54px] max-h-40 overflow-auto whitespace-pre-wrap ${customRes.ok ? 'text-[var(--text-primary)]' : 'text-apple-red'}`;
+      let passed = 0, maxMs = customRes.ms;
+      const testResults = [];
+      for (const t of ch.tests) {
+        testResults.push(await execFn(code, t.input));
+      }
+      runBtn.disabled = false;
+      document.getElementById('test-list').innerHTML = ch.tests.map((t, idx) => {
+        const r = testResults[idx]; maxMs = Math.max(maxMs, r.ms);
+        const ok = r.ok && norm(r.output) === norm(t.expected); if (ok) passed++;
+        return `<div class="rounded-2xl p-3 elevated space-y-1.5 text-xs"><div class="flex items-center justify-between"><div class="flex items-center gap-2"><span class="font-semibold">Test ${idx + 1}</span><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${ok ? 'bg-apple-green/15 text-apple-green' : 'bg-apple-red/15 text-apple-red'}">${ok ? 'Passed' : 'Failed'}</span></div><span class="font-mono text-[11px] text-[var(--text-secondary)]">${r.ms}ms</span></div>${!ok ? `<div class="grid grid-cols-2 gap-2 pt-1 font-mono text-[11px]"><div class="p-2 rounded-lg bg-[var(--code-bg)]"><span class="text-[var(--text-secondary)]">Expected:</span><br/>${esc(t.expected || '(empty)')}</div><div class="p-2 rounded-lg bg-[var(--code-bg)] text-apple-red"><span class="text-[var(--text-secondary)]">Got:</span><br/>${esc(r.ok ? (r.output || '(empty)') : r.error)}</div></div>` : ''}</div>`;
+      }).join('');
+      const msEl = document.getElementById('run-ms'); msEl.textContent = `${maxMs}ms`; msEl.classList.remove('hidden');
+      const sumEl = document.getElementById('run-summary');
+      if (passed === ch.tests.length) {
+        sumEl.textContent = `All ${passed}/${ch.tests.length} Passed ✓`; sumEl.className = 'text-xs font-bold text-apple-green';
+        if (!state.solvedIds.has(ch.id)) { state.solvedIds.add(ch.id); saveState(); updateStats(); renderHomeModules(); initStudioSelect(); document.getElementById('prob-status').textContent = 'Solved ✓'; document.getElementById('prob-status').className = 'px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-apple-green/15 text-apple-green'; celebrateSolve(); }
+        showToast('All test cases passed!');
+      } else { sumEl.textContent = `${passed}/${ch.tests.length} Passed`; sumEl.className = 'text-xs font-bold text-apple-orange'; }
+      if (window.innerWidth < 1024) setMobilePane('output');
+    }
+    function setMobilePane(p) {
+      state.mobilePane = p;
+      document.querySelectorAll('.mpane-btn').forEach(b => b.className = `mpane-btn py-1.5 rounded-xl text-xs font-semibold ${b.dataset.mpane === p ? 'bg-apple-blue text-white' : 'text-[var(--text-secondary)]'}`);
+      const mobile = window.innerWidth < 1024;
+      document.getElementById('pane-problem').classList.toggle('hidden', mobile && p !== 'problem');
+      document.getElementById('pane-code').classList.toggle('hidden', mobile && p !== 'code');
+      document.getElementById('pane-output').classList.toggle('hidden', mobile && p !== 'output');
+    }
+
+    // Exam
+    function euiGrade(p) {
+      if (p >= 96) return 'A+'; if (p >= 92) return 'A'; if (p >= 88) return 'A-'; if (p >= 84) return 'B+';
+      if (p >= 80) return 'B'; if (p >= 76) return 'B-'; if (p >= 72) return 'C+'; if (p >= 68) return 'C';
+      if (p >= 64) return 'C-'; if (p >= 60) return 'D+'; if (p >= 55) return 'D'; if (p >= 50) return 'D-'; return 'F';
+    }
+    function startExamTimer() {
+      clearInterval(state.examTimerId);
+      state.examTimerId = setInterval(() => {
+        if (state.examSubmitted) { clearInterval(state.examTimerId); return; }
+        state.examSeconds = Math.max(0, state.examSeconds - 1);
+        document.getElementById('exam-timer').textContent = `${String(Math.floor(state.examSeconds / 60)).padStart(2, '0')}:${String(state.examSeconds % 60).padStart(2, '0')}`;
+        if (state.examSeconds === 0) submitExam();
+      }, 1000);
+    }
+    function renderExam() {
+      const q = EXAM_QUESTIONS[state.examIdx];
+      document.getElementById('exam-q-num').textContent = `Question ${state.examIdx + 1} of ${EXAM_QUESTIONS.length}`;
+      document.getElementById('exam-q-topic').textContent = q.topic;
+      document.getElementById('exam-q-prompt').textContent = q.prompt;
+      const ce = document.getElementById('exam-q-code');
+      if (q.code) { ce.innerHTML = highlightCpp(q.code); ce.classList.remove('hidden'); } else ce.classList.add('hidden');
+      document.getElementById('exam-pills').innerHTML = EXAM_QUESTIONS.map((item, i) => {
+        const ans = state.examAnswers[i];
+        let cls = 'elevated text-[var(--text-secondary)]';
+        if (state.examSubmitted) cls = ans === item.answer ? 'bg-apple-green/20 text-apple-green border border-apple-green/40' : 'bg-apple-red/20 text-apple-red border border-apple-red/40';
+        else if (i === state.examIdx) cls = 'bg-apple-blue text-white';
+        else if (ans !== undefined) cls = 'bg-apple-blue/15 text-apple-blue border border-apple-blue/30';
+        return `<button data-qi="${i}" class="w-8 h-8 rounded-xl text-xs font-bold ${cls}">${i + 1}</button>`;
+      }).join('');
+      document.querySelectorAll('[data-qi]').forEach(b => b.addEventListener('click', () => { state.examIdx = Number(b.dataset.qi); renderExam(); }));
+      const sel = state.examAnswers[state.examIdx];
+      document.getElementById('exam-options').innerHTML = q.options.map((opt, idx) => {
+        let cls = 'elevated hover:border-apple-blue';
+        if (state.examSubmitted) { if (idx === q.answer) cls = 'bg-apple-green/15 border border-apple-green'; else if (idx === sel) cls = 'bg-apple-red/15 border border-apple-red'; }
+        else if (sel === idx) cls = 'bg-apple-blue/15 border border-apple-blue';
+        return `<button data-oi="${idx}" class="w-full text-left px-4 py-3 rounded-2xl text-xs sm:text-sm font-medium flex items-center gap-3 transition-all ${cls}" ${state.examSubmitted ? 'disabled' : ''}><span class="w-6 h-6 rounded-lg bento-card flex items-center justify-center font-mono text-xs shrink-0">${String.fromCharCode(65 + idx)}</span><span>${esc(opt)}</span></button>`;
+      }).join('');
+      document.querySelectorAll('[data-oi]').forEach(b => b.addEventListener('click', () => { if (!state.examSubmitted) { state.examAnswers[state.examIdx] = Number(b.dataset.oi); renderExam(); } }));
+      const fb = document.getElementById('exam-feedback');
+      if (state.examSubmitted) {
+        const ok = sel === q.answer;
+        fb.className = `rounded-2xl p-4 text-xs sm:text-sm rtl text-right leading-relaxed ${ok ? 'bg-apple-green/10 border border-apple-green/30' : 'bg-apple-red/10 border border-apple-red/30'}`;
+        fb.innerHTML = `<div class="font-bold mb-1 ${ok ? 'text-apple-green' : 'text-apple-red'}">${ok ? 'إجابة صحيحة ✓' : 'إجابة خاطئة ✗'}</div><div>${q.exp}</div>`;
+        fb.classList.remove('hidden');
+      } else fb.classList.add('hidden');
+      document.getElementById('exam-prev').disabled = state.examIdx === 0;
+      document.getElementById('exam-next').disabled = state.examIdx === EXAM_QUESTIONS.length - 1;
+      document.getElementById('exam-submit').classList.toggle('hidden', state.examSubmitted);
+    }
+    function submitExam() {
+      state.examSubmitted = true; clearInterval(state.examTimerId); state.examTimerId = null;
+      let sc = 0; EXAM_QUESTIONS.forEach((q, i) => { if (state.examAnswers[i] === q.answer) sc++; });
+      const pct = Math.round((sc / EXAM_QUESTIONS.length) * 100);
+      if (state.examBestPct === null || pct > state.examBestPct) { state.examBestPct = pct; saveState(); }
+      updateStats();
+      document.getElementById('exam-grade-badge').textContent = euiGrade(pct);
+      document.getElementById('exam-score-text').textContent = `${sc} / ${EXAM_QUESTIONS.length} (${pct}%)`;
+      document.getElementById('exam-score-sub').textContent = pct >= 84 ? 'مستوى جامد جداً! جاهز تقفل الميدترم والـ Lab Quiz.' : 'راجع الأسئلة الغلط وشوف الشرح عشان متقعش في تريكات الامتحان.';
+      document.getElementById('exam-result').classList.remove('hidden');
+      document.getElementById('exam-card').classList.add('hidden');
+    }
+    function resetExam() {
+      state.examIdx = 0; state.examAnswers = {}; state.examSubmitted = false; state.examSeconds = 24 * 60;
+      document.getElementById('exam-timer').textContent = '20:00';
+      document.getElementById('exam-result').classList.add('hidden');
+      document.getElementById('exam-card').classList.remove('hidden');
+      startExamTimer(); renderExam();
+    }
+
+    // =========================================================================
+    // 7. INIT
+    // =========================================================================
+    document.addEventListener('DOMContentLoaded', () => {
+      loadState(); applyTheme();
+      document.getElementById('brand-home-btn').addEventListener('click', () => switchView('home'));
+      document.querySelectorAll('.nav-btn').forEach(b => b.addEventListener('click', () => switchView(b.dataset.nav)));
+      document.getElementById('home-go-labs').addEventListener('click', () => { switchLab('pattern'); switchView('labs'); });
+      document.getElementById('home-go-bughunter').addEventListener('click', () => { switchLab('bughunter'); switchView('labs'); });
+      document.getElementById('home-go-studio').addEventListener('click', () => switchView('studio'));
+      document.getElementById('home-go-exam').addEventListener('click', () => switchView('exam'));
+      document.getElementById('lang-toggle').addEventListener('click', () => { state.lang = state.lang === 'en' ? 'ar' : 'en'; applyLang(); });
+      document.getElementById('theme-toggle').addEventListener('click', () => {
+        const next = state.theme === 'dark' ? 'light' : 'dark';
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        state.theme = next; saveState();
+        if (reduced) { applyTheme(); return; }
+        const r = document.getElementById('theme-toggle').getBoundingClientRect();
+        const w = document.getElementById('theme-wipe');
+        w.style.background = next === 'dark' ? '#000000' : '#F5F5F7';
+        w.style.setProperty('--wx', (r.left + r.width / 2) + 'px');
+        w.style.setProperty('--wy', (r.top + r.height / 2) + 'px');
+        w.classList.add('on');
+        setTimeout(() => { document.documentElement.classList.add('theme-anim'); applyTheme(); setTimeout(() => document.documentElement.classList.remove('theme-anim'), 450); }, 280);
+        setTimeout(() => { w.style.opacity = '0'; }, 600);
+        setTimeout(() => { w.classList.remove('on'); w.style.opacity = ''; }, 850);
+      });
+
+      // Scroll reveal (fade + rise) for static cards; skips when reduced motion is on
+      const revealIO = new IntersectionObserver((entries) => {
+        entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('reveal-in'); revealIO.unobserve(en.target); } });
+      }, { threshold: 0.1 });
+      document.querySelectorAll('.reveal').forEach(el => revealIO.observe(el));
+
+      document.querySelectorAll('.filter-pill').forEach(b => b.addEventListener('click', () => {
+        state.modFilter = b.dataset.filter;
+        document.querySelectorAll('.filter-pill').forEach(x => x.className = `filter-pill px-3.5 py-1.5 rounded-full text-xs ${x.dataset.filter === state.modFilter ? 'font-semibold bg-apple-blue text-white' : 'font-medium elevated'}`);
+        renderHomeModules();
+      }));
+      document.querySelectorAll('.lab-tab-btn').forEach(b => b.addEventListener('click', () => switchLab(b.dataset.lab)));
+
+      // Pattern Lab
+      document.querySelectorAll('.pat-btn').forEach(b => b.addEventListener('click', () => {
+        stopPatAnim(); state.patKey = b.dataset.pat; state.patStep = 0;
+        document.querySelectorAll('.pat-btn').forEach(x => x.className = `pat-btn px-2.5 py-2 rounded-xl text-xs ${x.dataset.pat === state.patKey ? 'font-semibold bg-apple-blue text-white' : 'font-medium elevated'}`);
+        renderPatternLab();
+      }));
+      document.getElementById('pat-n-slider').addEventListener('input', e => { stopPatAnim(); state.patN = Number(e.target.value); state.patStep = 0; renderPatternLab(); });
+      document.getElementById('pat-reset').addEventListener('click', () => { stopPatAnim(); state.patStep = 0; renderPatternLab(); });
+      document.getElementById('pat-step').addEventListener('click', () => { stopPatAnim(); if (state.patStep < state.patN * state.patN) state.patStep++; renderPatternLab(); });
+      document.getElementById('pat-play').addEventListener('click', () => {
+        const max = state.patN * state.patN;
+        if (state.patTimer) { stopPatAnim(); return; }
+        if (state.patStep >= max) state.patStep = 0;
+        document.getElementById('pat-play-label').textContent = 'Pause';
+        document.getElementById('pat-play-icon').setAttribute('data-lucide', 'pause'); lucide.createIcons();
+        state.patTimer = setInterval(() => { if (state.patStep < max) { state.patStep++; renderPatternLab(); } else stopPatAnim(); }, 250);
+      });
+
+      // Bug Hunter
+      document.querySelectorAll('.bh-case-btn').forEach(b => b.addEventListener('click', () => {
+        state.bhCase = b.dataset.bh; state.bhFound = new Set();
+        document.querySelectorAll('.bh-case-btn').forEach(x => x.className = `bh-case-btn p-3 rounded-2xl text-left text-xs ${x.dataset.bh === state.bhCase ? 'bg-apple-blue/15 border border-apple-blue font-semibold' : 'elevated font-medium'}`);
+        renderBugHunter();
+      }));
+      document.getElementById('bh-reset').addEventListener('click', () => { state.bhFound = new Set(); renderBugHunter(); });
+      document.getElementById('bh-reveal-all').addEventListener('click', () => {
+        Object.keys(BUG_HUNTER_CASES[state.bhCase].bugs).forEach(k => state.bhFound.add(Number(k)));
+        renderBugHunter();
+      });
+
+      // Two Runners
+      document.getElementById('run-reset').addEventListener('click', () => { stopRunnersAnim(); state.runStep = 0; renderRunnersLab(); });
+      document.getElementById('run-step').addEventListener('click', () => { stopRunnersAnim(); if (state.runStep < RUNNER_STEPS.length - 1) state.runStep++; renderRunnersLab(); });
+      document.getElementById('run-play').addEventListener('click', () => {
+        stopRunnersAnim(); state.runStep = 0; renderRunnersLab();
+        state.runTimer = setInterval(() => {
+          if (state.runStep < RUNNER_STEPS.length - 1) { state.runStep++; renderRunnersLab(); }
+          else stopRunnersAnim();
+        }, 700);
+      });
+
+      // Traps & Binary
+      document.querySelectorAll('.trap-sel-btn').forEach(b => b.addEventListener('click', () => {
+        state.trapKey = b.dataset.trap;
+        document.querySelectorAll('.trap-sel-btn').forEach(x => x.className = `trap-sel-btn w-full text-left p-3.5 rounded-2xl text-xs sm:text-sm ${x.dataset.trap === state.trapKey ? 'bg-apple-blue/15 border border-apple-blue font-semibold' : 'elevated font-medium'}`);
+        renderTrapLab();
+      }));
+      document.querySelectorAll('.byte-preset').forEach(b => b.addEventListener('click', () => { state.byteVal = Number(b.dataset.bytePreset); renderBinaryLab(); }));
+      document.getElementById('ascii-c1').addEventListener('input', renderAsciiCompare);
+      document.getElementById('ascii-c2').addEventListener('input', renderAsciiCompare);
+
+      // Studio
+      const ed = document.getElementById('code-editor');
+      document.getElementById('challenge-source-filter').addEventListener('change', e => { state.chFilter = e.target.value; initStudioSelect(); loadChallenge(state.activeChallengeId); });
+      document.getElementById('challenge-select').addEventListener('change', e => loadChallenge(e.target.value));
+      ed.addEventListener('input', () => { state.codeDrafts[state.activeChallengeId] = ed.value; updateGutterAndHighlight(); });
+      ed.addEventListener('scroll', updateGutterAndHighlight);
+      ed.addEventListener('keydown', e => {
+        if (e.key === 'Tab') { e.preventDefault(); const s = ed.selectionStart, en = ed.selectionEnd; ed.value = ed.value.slice(0, s) + '    ' + ed.value.slice(en); ed.selectionStart = ed.selectionEnd = s + 4; state.codeDrafts[state.activeChallengeId] = ed.value; updateGutterAndHighlight(); }
+        else if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); runStudio(); }
+      });
+      document.querySelectorAll('.sym-btn').forEach(b => b.addEventListener('click', () => {
+        const sym = b.dataset.sym, s = ed.selectionStart, en = ed.selectionEnd;
+        ed.value = ed.value.slice(0, s) + sym + ed.value.slice(en); ed.focus(); ed.selectionStart = ed.selectionEnd = s + sym.length;
+        state.codeDrafts[state.activeChallengeId] = ed.value; updateGutterAndHighlight();
+      }));
+      document.getElementById('btn-font-dec').addEventListener('click', () => { state.editorFs = Math.max(11, state.editorFs - 1); document.documentElement.style.setProperty('--editor-fs', `${state.editorFs}px`); });
+      document.getElementById('btn-font-inc').addEventListener('click', () => { state.editorFs = Math.min(18, state.editorFs + 1); document.documentElement.style.setProperty('--editor-fs', `${state.editorFs}px`); });
+      document.getElementById('btn-copy-code').addEventListener('click', () => { try { navigator.clipboard.writeText(ed.value); showToast('Copied!'); } catch (e) { ed.select(); document.execCommand('copy'); showToast('Copied!'); } });
+      document.getElementById('compiler-mode').addEventListener('change', e => {
+        state.compilerMode = e.target.value;
+        showToast(state.compilerMode === 'judge0' ? 'Real g++ (Judge0 CE) enabled!' : 'Fast Local Runner enabled.');
+      });
+      document.getElementById('btn-hint').addEventListener('click', () => document.getElementById('prob-hint-box').classList.toggle('hidden'));
+      document.getElementById('btn-explain').addEventListener('click', () => document.getElementById('prob-explain-box').classList.toggle('hidden'));
+      document.getElementById('btn-solution').addEventListener('click', () => { const ch = CHALLENGES.find(c => c.id === state.activeChallengeId); ed.value = ch.solution; state.codeDrafts[ch.id] = ch.solution; updateGutterAndHighlight(); showToast('Solution loaded.'); });
+      document.getElementById('btn-reset-code').addEventListener('click', () => { const ch = CHALLENGES.find(c => c.id === state.activeChallengeId); ed.value = ch.starter; state.codeDrafts[ch.id] = ch.starter; updateGutterAndHighlight(); showToast('Reset.'); });
+      document.getElementById('btn-run-code').addEventListener('click', runStudio);
+      document.querySelectorAll('.mpane-btn').forEach(b => b.addEventListener('click', () => setMobilePane(b.dataset.mpane)));
+      window.addEventListener('resize', () => setMobilePane(state.mobilePane));
+
+      // Exam
+      document.getElementById('exam-prev').addEventListener('click', () => { state.examIdx = Math.max(0, state.examIdx - 1); renderExam(); });
+      document.getElementById('exam-next').addEventListener('click', () => { state.examIdx = Math.min(EXAM_QUESTIONS.length - 1, state.examIdx + 1); renderExam(); });
+      document.getElementById('exam-submit').addEventListener('click', submitExam);
+      document.getElementById('exam-restart').addEventListener('click', resetExam);
+      document.getElementById('exam-retake').addEventListener('click', resetExam);
+      document.getElementById('exam-review').addEventListener('click', () => { document.getElementById('exam-result').classList.add('hidden'); document.getElementById('exam-card').classList.remove('hidden'); state.examIdx = 0; renderExam(); });
+
+      renderHomeModules(); renderPatternLab(); renderBugHunter(); renderRunnersLab(); renderTrapLab(); renderBinaryLab();
+      loadChallenge(state.activeChallengeId); setMobilePane('problem'); renderExam(); switchView('home'); lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
